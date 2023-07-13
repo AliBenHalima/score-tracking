@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csharp",
+        "ms-azuretools.vscode-docker",
+        "file-icons.file-icons",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "ghmcadams.lintlens",
+        "christian-kohler.npm-intellisense",
+        "redhat.vscode-xml"
+    ]
+}

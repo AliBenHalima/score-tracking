@@ -1,0 +1,75 @@
+version: "3.8"
+
+networks:
+  scoretracking-net:
+    driver: bridge
+
+services:
+  api:
+    container_name: scoretracking-api
+    build:
+      context: ./components/api
+      dockerfile: Dockerfile
+      target: runtime
+      args:
+        BUILD_CONFIGURATION: Release
+    restart: on-failure
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:80
+    ports:
+      - 5000:80
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - scoretracking-net
+    healthcheck:
+      test: wget -nv -t1 --spider http://localhost:80/swagger/index.html || exit 1
+      interval: 10s
+      timeout: 20s
+      retries: 3
+
+  database:
+    image: postgres:latest
+    container_name: scoretracking-database
+    restart: on-failure
+    environment:
+      POSTGRES_USER: $DATABASE_USER
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+      POSTGRES_DB: $DATABASE_NAME
+    ports:
+      - 5432:5432
+    volumes:
+      - database_volume:/var/lib/postgresql/data
+    networks:
+      - scoretracking-net
+    logging:
+      driver: "none"
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 20s
+      retries: 3
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: scoretracking-pgadmin
+    restart: on-failure
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@scoretracking.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - 5050:5050
+    networks:
+      - scoretracking-net
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
+    logging:
+      driver: "none"
+
+volumes:
+  database_volume:
+  pgadmin_volume:

@@ -1,1 +1,1 @@
-Score Tracking Application
+# Score Tracking Application

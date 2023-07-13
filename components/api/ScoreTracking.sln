@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoreTracking.API", "src\scoretracking-api\ScoreTracking.API.csproj", "{AEDCC9C7-9DBE-42DB-B0B1-896A42EADA7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E249A61D-9402-4668-8DC5-AAC2EE326C22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoreTracking.UnitTests", "tests\unit-tests\ScoreTracking.UnitTests.csproj", "{519B05ED-117E-4267-8191-A35D777E2EE7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEDCC9C7-9DBE-42DB-B0B1-896A42EADA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEDCC9C7-9DBE-42DB-B0B1-896A42EADA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEDCC9C7-9DBE-42DB-B0B1-896A42EADA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEDCC9C7-9DBE-42DB-B0B1-896A42EADA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519B05ED-117E-4267-8191-A35D777E2EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519B05ED-117E-4267-8191-A35D777E2EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519B05ED-117E-4267-8191-A35D777E2EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519B05ED-117E-4267-8191-A35D777E2EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8EBE5DA5-6177-47EF-9F13-ADB5C6D18548}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{519B05ED-117E-4267-8191-A35D777E2EE7} = {E249A61D-9402-4668-8DC5-AAC2EE326C22}
+	EndGlobalSection
+EndGlobal
