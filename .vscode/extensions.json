@@ -8,6 +8,9 @@
         "eamodio.gitlens",
         "ghmcadams.lintlens",
         "christian-kohler.npm-intellisense",
-        "redhat.vscode-xml"
+        "redhat.vscode-xml",
+        "streetsidesoftware.code-spell-checker",
+        "usernamehw.errorlens",
+        "dbaeumer.vscode-eslint"
     ]
 }
