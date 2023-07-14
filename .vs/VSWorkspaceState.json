@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\ScoreTracking",
-    "\\ScoreTracking\\Controllers"
+    "\\ScoreTracking\\Database",
+    "\\ScoreTracking\\Database\\Entities"
   ],
-  "SelectedNode": "\\ScoreTracking.sln",
+  "SelectedNode": "\\ScoreTracking\\ScoreTracking.csproj",
   "PreviewInSolutionExplorer": false
 }

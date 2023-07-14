@@ -6,7 +6,12 @@ C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\ScoreTra
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\ScoreTracking.dll
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\ScoreTracking.pdb
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.OpenApi.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Npgsql.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -31,3 +36,10 @@ C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\obj\Debug\net7.0\refint\S
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\obj\Debug\net7.0\ScoreTracking.pdb
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\obj\Debug\net7.0\ScoreTracking.genruntimeconfig.cache
 C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\obj\Debug\net7.0\ref\ScoreTracking.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Humanizer.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\System.CodeDom.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\AutoMapper.dll
+C:\Users\DELL\source\repos\ScoreTracking\ScoreTracking\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

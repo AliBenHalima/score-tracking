@@ -4,9 +4,9 @@
 
 namespace ScoreTracking.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         // GET: api/<ValuesController>
         [HttpGet]
