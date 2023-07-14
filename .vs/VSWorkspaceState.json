@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\ScoreTracking",
+    "\\ScoreTracking\\Controllers"
   ],
-  "SelectedNode": "\\Dockerfile",
+  "SelectedNode": "\\ScoreTracking.sln",
   "PreviewInSolutionExplorer": false
 }
