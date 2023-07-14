@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS env
 WORKDIR /build
 COPY ./ScoreTracking.Build.sln ./
 COPY ./src/scoretracking-api/ScoreTracking.API.csproj ./src/scoretracking-api/
+COPY ./src/scoretracking-app/ScoreTracking.App.csproj ./src/scoretracking-app/
 RUN dotnet restore ScoreTracking.Build.sln
 
 FROM env AS build-env

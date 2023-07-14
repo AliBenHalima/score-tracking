@@ -17,6 +17,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:80
+      # Logging__LogLevel__Microsoft.AspNetCore: Debug
     ports:
       - 5000:80
     depends_on:

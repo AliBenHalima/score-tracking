@@ -11,7 +11,7 @@ public class SampleController : ControllerBase
     [HttpGet]
     public IEnumerable<string> Get()
     {
-        return new[] { "value1", "value2" };
+        return new[] { "grgf1", "value2" };
     }
 
     [HttpGet("{id:int}")]
