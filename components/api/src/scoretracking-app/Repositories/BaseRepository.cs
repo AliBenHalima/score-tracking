@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.Interfaces.Repositories;
+using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +11,45 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Repositories
 {
-    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : Base
     {
-        protected DatabaseContext databaseContext { get; set; }
+        protected readonly DbSet<T> Entity;
+
+        protected readonly DatabaseContext DatabaseContext;
         public BaseRepository(DatabaseContext databaseContext)
         {
-            this.databaseContext = databaseContext;
+            DatabaseContext = databaseContext;
+            Entity = databaseContext.Set<T>();
         }
         public virtual async Task<IEnumerable<T>> FindAll()
         {
-            return await databaseContext.Set<T>().AsNoTracking().ToListAsync();
+            return await Entity.AsNoTracking().ToListAsync();
         }
-        public virtual async Task<T> FindByCondition(Expression<Func<T, bool>> expression)
+        public virtual async Task<T?> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return await databaseContext.Set<T>().Where(expression).AsNoTracking().FirstOrDefaultAsync();
+            return await Entity.Where(expression).AsNoTracking().FirstOrDefaultAsync();
         }
-           
+        public async Task<T> FindById(int id)
+        {
+            return await Entity.Where(u => u.Id == id).AsNoTracking().FirstAsync();
+        }
+
         public virtual async Task<T> Create(T entity)
         {
-            databaseContext.Set<T>().Add(entity);
-            await databaseContext.SaveChangesAsync();
+            Entity.Add(entity);
+            await DatabaseContext.SaveChangesAsync();
             return entity;
            
         }
         public virtual async Task<T> Update(T entity)
         {
-            databaseContext.Set<T>().Update(entity);
-            await databaseContext.SaveChangesAsync();
+            Entity.Update(entity);
+            await DatabaseContext.SaveChangesAsync();
             return entity;
         }
         public virtual async Task Delete(T entity) {
-            databaseContext.Set<T>().Remove(entity);
-            await databaseContext.SaveChangesAsync();
+            Entity.Remove(entity);
+            await DatabaseContext.SaveChangesAsync();
         }
     }
 }

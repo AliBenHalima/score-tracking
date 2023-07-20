@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using ScoreTracking.App.Helpers;
+using ScoreTracking.App.Helpers.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

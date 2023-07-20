@@ -7,14 +7,14 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.Helpers
+namespace ScoreTracking.App.Helpers.Exceptions
 {
     public class RessourceNotFoundException : ScoreTrackingException
     {
         public RessourceNotFoundException(string message, params object[] args)
-      : base(String.Format(CultureInfo.CurrentCulture, message, args))
+      : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
-            this.statusCode = (int)HttpStatusCode.NotFound;
+            statusCode = (int)HttpStatusCode.NotFound;
         }
     }
 }

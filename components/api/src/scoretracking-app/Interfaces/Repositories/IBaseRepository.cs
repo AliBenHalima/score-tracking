@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScoreTracking.App.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Interfaces.Repositories
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T> where T : Base
     {
         Task<IEnumerable<T>> FindAll();
-        Task<T> FindByCondition(Expression<Func<T, bool>> expression);
+        Task<T> FindById(int id);
+        Task<T?> FindByCondition(Expression<Func<T, bool>> expression);
         Task<T> Create(T entity);
         Task<T> Update(T entity);
         Task Delete(T entity);

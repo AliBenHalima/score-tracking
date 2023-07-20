@@ -7,14 +7,14 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.Helpers
+namespace ScoreTracking.App.Helpers.Exceptions
 {
     public class BadRequestException : ScoreTrackingException
     {
         public BadRequestException(string message, params object[] args)
-      : base(String.Format(CultureInfo.CurrentCulture, message, args))
+      : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
-            this.statusCode = (int)HttpStatusCode.BadRequest;
+            statusCode = (int)HttpStatusCode.BadRequest;
         }
     }
 }

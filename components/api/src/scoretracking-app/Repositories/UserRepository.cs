@@ -14,15 +14,25 @@ namespace ScoreTracking.App.Repositories
 {
     public class UserRepository: BaseRepository<User>, IUserRepository
     {
+        protected DbSet<User> test;
+
         public UserRepository(DatabaseContext databaseContext): base(databaseContext)
-        { 
+        {
         }
 
         public override async Task<User> Create(User user)
         {
-             databaseContext.users.Add(user);
-             await this.databaseContext.SaveChangesAsync().ConfigureAwait(true);
+            DatabaseContext.users.Add(user);
+            await DatabaseContext.SaveChangesAsync();
              return user;
+        }
+        public async Task<User> FindByEmail(string email)
+        {
+            return await Entity.Where(u => u.Email == email).AsNoTracking().FirstOrDefaultAsync();
+        }
+        public async Task<User> FindByPhone(string phone)
+        {
+            return await Entity.Where(u => u.Phone == phone).AsNoTracking().FirstOrDefaultAsync();
         }
     }
 }

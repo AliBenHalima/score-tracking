@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.DTOs.Response
+namespace ScoreTracking.App.DTOs.Responses
 {
     public class SuccessResponse
     {

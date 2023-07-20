@@ -18,14 +18,15 @@ using ScoreTracking.App.DTOs.Requests;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(IModuleMarker).Assembly);
 //Services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers().AddFluentValidation(x =>
 {
     x.ImplicitlyValidateChildProperties = true;
-    x.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()); // TODO : Normally we need to specify the exact Assembly (not all assemblies) 
+    x.RegisterValidatorsFromAssembly(typeof(IModuleMarker).Assembly);
 });
 
 builder.Services.AddSwaggerGen();

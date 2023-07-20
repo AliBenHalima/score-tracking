@@ -10,7 +10,10 @@ namespace ScoreTracking.App.Interfaces.Repositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-  
+        Task<User> FindByEmail(string email);
+        Task<User> FindByPhone(string phone);
+
+
     }
 
 }

@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.Helpers
+namespace ScoreTracking.App.Helpers.Exceptions
 {
     public class ScoreTrackingException : Exception
     {
@@ -16,12 +16,12 @@ namespace ScoreTracking.App.Helpers
         // Constructor used when status code is implicitly used
 
         public ScoreTrackingException(string message, params object[] args) :
-        base(String.Format(CultureInfo.CurrentCulture, message, args))
+        base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
         }
         // Constructor used when status code is explicitly used
         public ScoreTrackingException(string message, int statusCode, params object[] args)
-      : base(String.Format(CultureInfo.CurrentCulture, message, args))
+      : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
             this.statusCode = statusCode;
         }

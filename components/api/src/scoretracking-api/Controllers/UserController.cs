@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
-using ScoreTracking.App.DTOs.Response;
+using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
@@ -18,20 +18,16 @@ namespace ScoreTracking.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public DatabaseContext dbContext { get; }
         private readonly IUserService _userService;
 
-        public UserController(DatabaseContext dbContext, IUserService userService)
+        public UserController(IUserService userService)
         {
-
-            this.dbContext = dbContext;
-            this._userService = userService;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            //List<User> users = (List<User>)await this._userService.GetUsers();
             IEnumerable<User> users = await this._userService.GetUsers();
             return Ok(new SuccessResponse("Users Fetched", users));
         }
