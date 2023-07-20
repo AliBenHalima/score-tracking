@@ -22,7 +22,7 @@ namespace ScoreTracking.App.Repositories
 
         public override async Task<User> Create(User user)
         {
-            DatabaseContext.users.Add(user);
+            DatabaseContext.Users.Add(user);
             await DatabaseContext.SaveChangesAsync();
              return user;
         }
