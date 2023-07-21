@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ScoreTracking.App.Database;
@@ -11,9 +12,11 @@ using ScoreTracking.App.Database;
 namespace ScoreTracking.App.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230720192344_AddCodeToGame")]
+    partial class AddCodeToGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,18 +59,9 @@ namespace ScoreTracking.App.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("joker_penalty_value");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
                     b.Property<int>("Score")
                         .HasColumnType("integer")
                         .HasColumnName("score");
-
-                    b.Property<DateTimeOffset?>("StartedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("started_at");
 
                     b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone")
@@ -77,33 +71,6 @@ namespace ScoreTracking.App.Migrations
                         .HasName("pk_games");
 
                     b.ToTable("games", (string)null);
-                });
-
-            modelBuilder.Entity("ScoreTracking.App.Models.Round", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.Property<DateTimeOffset>("Updated")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated");
-
-                    b.HasKey("Id")
-                        .HasName("pk_rounds");
-
-                    b.ToTable("rounds", (string)null);
                 });
 
             modelBuilder.Entity("ScoreTracking.App.Models.User", b =>
@@ -160,97 +127,54 @@ namespace ScoreTracking.App.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2192), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2023, 7, 20, 19, 23, 44, 632, DateTimeKind.Unspecified).AddTicks(182), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "Test1@gmail.com",
                             FirstName = "Robert",
                             LastName = "Lara",
                             Phone = "+21600000001",
-                            Updated = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2204), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2023, 7, 20, 19, 23, 44, 632, DateTimeKind.Unspecified).AddTicks(195), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2208), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2023, 7, 20, 19, 23, 44, 632, DateTimeKind.Unspecified).AddTicks(199), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "Test2@gmail.com",
                             FirstName = "John",
                             LastName = "Doe",
                             Phone = "+21600000002",
-                            Updated = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2209), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2023, 7, 20, 19, 23, 44, 632, DateTimeKind.Unspecified).AddTicks(200), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
             modelBuilder.Entity("ScoreTracking.App.Models.UserGame", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
+                        .HasColumnName("user_id");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer")
                         .HasColumnName("game_id");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
                     b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
+                    b.HasKey("UserId", "GameId")
                         .HasName("pk_user_game");
 
                     b.HasIndex("GameId")
                         .HasDatabaseName("ix_user_game_game_id");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_game_user_id");
-
                     b.ToTable("user_game", (string)null);
-                });
-
-            modelBuilder.Entity("ScoreTracking.App.Models.UserGameRound", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
-
-                    b.Property<int>("RoundId")
-                        .HasColumnType("integer")
-                        .HasColumnName("round_id");
-
-                    b.Property<DateTimeOffset>("Updated")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated");
-
-                    b.Property<int>("UserGameId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_game_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_user_game_round");
-
-                    b.HasIndex("RoundId")
-                        .HasDatabaseName("ix_user_game_round_round_id");
-
-                    b.HasIndex("UserGameId")
-                        .HasDatabaseName("ix_user_game_round_user_game_id");
-
-                    b.ToTable("user_game_round", (string)null);
                 });
 
             modelBuilder.Entity("ScoreTracking.App.Models.UserGame", b =>
@@ -274,45 +198,14 @@ namespace ScoreTracking.App.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ScoreTracking.App.Models.UserGameRound", b =>
-                {
-                    b.HasOne("ScoreTracking.App.Models.Round", "Round")
-                        .WithMany("UserGameRounds")
-                        .HasForeignKey("RoundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_game_round_rounds_round_id1");
-
-                    b.HasOne("ScoreTracking.App.Models.UserGame", "UserGame")
-                        .WithMany("UserGameRounds")
-                        .HasForeignKey("UserGameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_game_round_user_game_user_game_id1");
-
-                    b.Navigation("Round");
-
-                    b.Navigation("UserGame");
-                });
-
             modelBuilder.Entity("ScoreTracking.App.Models.Game", b =>
                 {
                     b.Navigation("UserGames");
                 });
 
-            modelBuilder.Entity("ScoreTracking.App.Models.Round", b =>
-                {
-                    b.Navigation("UserGameRounds");
-                });
-
             modelBuilder.Entity("ScoreTracking.App.Models.User", b =>
                 {
                     b.Navigation("UserGames");
-                });
-
-            modelBuilder.Entity("ScoreTracking.App.Models.UserGame", b =>
-                {
-                    b.Navigation("UserGameRounds");
                 });
 #pragma warning restore 612, 618
         }

@@ -33,6 +33,12 @@ namespace ScoreTracking.App.Repositories
         {
             return await Entity.Where(u => u.Id == id).AsNoTracking().FirstAsync();
         }
+        public async Task<IEnumerable<T>> FindByIds(IEnumerable<int> ids)
+        {
+            return await Entity.Where(u => ids.Any(x => x == u.Id)).ToListAsync();
+        }
+
+
 
         public virtual async Task<T> Create(T entity)
         {

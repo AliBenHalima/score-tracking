@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ScoreTracking.App.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,15 +10,12 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Models
 {
-    [Table("user_game")]
-    public class UserGame : Base
+    [Table("rounds")]
+    public class Round : Base
     {
-        public int UserId{ get; set; }
-        public int GameId { get; set; }
-        public User User { get; set; } = null!;
-        public Game Game { get; set; } = null!;
-
-        public List<Round> Rounds { get;  } = new();
+        public int number { get; set; }
+        public GameRoundStatus Status { get; set; } = GameRoundStatus.Played;
+        public List<UserGame> UserGames { get; } = new();
         public List<UserGameRound> UserGameRounds { get; } = new();
     }
 }

@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs.Requests
 {
-    public class CreateUserRequest
+    public class CreateGameRequest
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public string Name { get; set; }
+        public int Score { get; set; }
+        public bool HasJokerPenalty { get; set; }
+        public int JokerPenaltyValue { get; set; }
+        public IEnumerable<int> UserIds { get; set; }
     }
 }

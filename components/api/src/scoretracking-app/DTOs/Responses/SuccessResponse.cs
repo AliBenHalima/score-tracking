@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs.Responses
 {
-    public class SuccessResponse
+    public class SuccessResponse<T>
     {
-        public string message { get; set; }
-        public Object? data { get; set; }
+        public string Message { get; set; }
+        public T? Data { get; set; }
 
-        public SuccessResponse(string message, Object? data) { 
-            this.message = message;
-            this.data = data;
+        public SuccessResponse(string message, T? data) {
+            Message = message;
+            Data = data;
         }
     }
 }

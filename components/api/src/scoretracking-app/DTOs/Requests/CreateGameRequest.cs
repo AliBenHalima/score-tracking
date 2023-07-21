@@ -1,22 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ScoreTracking.App.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.Models
+namespace ScoreTracking.App.DTOs.Requests
 {
-    [Table("users")]
-    public class User : Base
+    public class CreateUserRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public List<Game> Games{ get; } = new();
-        public List<UserGame> UserGames { get; } = new();
     }
 }

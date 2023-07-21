@@ -14,8 +14,19 @@ namespace ScoreTracking.App.Helpers
     {
         public AutoMapperProfile()
         {
+            //Requests
             CreateMap<CreateUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
+            CreateMap<CreateGameRequest, Game>()
+            .ForMember(
+                dest => dest.Code,
+                opt => opt.MapFrom(src => GlobalHelper.generateRandom(1000,9999))
+            );
+
+            //DTOs
+            CreateMap<Game, CreateGameDTO>();
+
+            
         }
     }
 }

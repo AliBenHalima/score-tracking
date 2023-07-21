@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Enum
 {
-    public enum GameEndingType
+    public enum GameRoundStatus
     {
-        Default = 0,
-        Surrounder = 1,
-        ForcedSurrounder =2,
+        Played = 0,
+        Cancelled= 1
     }
 }

@@ -80,5 +80,10 @@ namespace ScoreTracking.App.Services
              await _userRepository.Delete(user);
         }
 
+        public async Task<IEnumerable<Game>> GetUserGames(int id)
+        {
+            return await _userRepository.GetGamesByUser(id);
+        }
+
     }
 }

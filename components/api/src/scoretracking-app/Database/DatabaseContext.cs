@@ -12,6 +12,8 @@ namespace ScoreTracking.App.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<UserGame> UserGames { get; set; }
+        public DbSet<Round> Rounds { get; set; }
+        public DbSet<UserGameRound> UserGameRounds { get; set; }
 
         protected readonly IConfiguration _configuration;
 
@@ -60,7 +62,7 @@ namespace ScoreTracking.App.Database
             .UsingEntity<UserGame>();
 
             modelBuilder.Entity<UserGame>()
-            .HasKey(ug => new { ug.UserId, ug.GameId});
+            .HasKey(ug => new { ug.Id});
 
             modelBuilder.Entity<UserGame>()
                 .HasOne(u => u.User)
@@ -71,6 +73,37 @@ namespace ScoreTracking.App.Database
                 .HasOne(g => g.Game)
                 .WithMany(ug => ug.UserGames)
                 .HasForeignKey(g => g.GameId);
+
+            ////
+            modelBuilder.Entity<Round>()
+           .HasMany(e => e.UserGames)
+           .WithMany(e => e.Rounds)
+           .UsingEntity<UserGameRound>(
+            j => j.HasOne(ugrl => ugrl.UserGame).WithMany(),
+            j => j.HasOne(ugrl => ugrl.Round).WithMany()
+        );
+
+            modelBuilder.Entity<UserGame>()
+            .HasMany(e => e.Rounds)
+            .WithMany(e => e.UserGames)
+            .UsingEntity<UserGameRound>(
+              j => j.HasOne(ugrl => ugrl.Round).WithMany(),
+              j => j.HasOne(ugrl => ugrl.UserGame).WithMany()
+        );
+
+
+            modelBuilder.Entity<UserGameRound>()
+           .HasKey(ug => ug.Id);
+
+            modelBuilder.Entity<UserGameRound>()
+                .HasOne(u => u.UserGame)
+                .WithMany(ug => ug.UserGameRounds)
+                .HasForeignKey(u => u.UserGameId);
+
+            modelBuilder.Entity<UserGameRound>()
+                .HasOne(g => g.Round)
+                .WithMany(ug => ug.UserGameRounds)
+                .HasForeignKey(g => g.RoundId);
         }
 
     }
