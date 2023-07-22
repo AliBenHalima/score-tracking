@@ -60,7 +60,9 @@ namespace ScoreTracking.Controllers
         public async Task<IActionResult> DeleteUser(int id) 
         {
             await this._userService.DeleteUser(id);
-            return Ok(new SuccessResponse<NullabilityInfo>("User Deleted", null));
+            // can't remove generic type in case of absence of data. (to review)
+            // Probably creating a new class to handle this use case (without generic type)
+            return Ok(new SuccessResponse<NullabilityInfo>("User Deleted")); 
         }
     }
 }
