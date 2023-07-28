@@ -32,7 +32,7 @@ namespace ScoreTracking.API.Controllers
         {
            CreateGameDTO gameDTO = await _gameService.CreateGame(createGameRequest);
            
-            return Ok(new SuccessResponse<CreateGameDTO>("Game Created", gameDTO));
+            return Ok(new SuccessResponse("Game Created", gameDTO));
         }
     }
 }
