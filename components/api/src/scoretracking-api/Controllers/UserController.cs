@@ -30,7 +30,7 @@ namespace ScoreTracking.Controllers
         public async Task<IActionResult> GetUsers()
         {
             IEnumerable<User> users = await this._userService.GetUsers();
-            return Ok(new SuccessResponse("Users Fetched", users));
+            return Ok(new SuccessResponse<IEnumerable<User>>("Users Fetched", users));
         }
 
         [HttpGet]
@@ -38,14 +38,14 @@ namespace ScoreTracking.Controllers
         public async Task<IActionResult> GetUser([FromRoute] int id)
         {
             User user = await this._userService.GetUser(id);
-            return Ok(new SuccessResponse("User Fetched", user));
+            return Ok(new SuccessResponse<User>("User Fetched", user));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserRequest createUserRequest)
         {
            var user = await this._userService.CreateUser(createUserRequest);
-            return Ok(new SuccessResponse("User Created", user));
+            return Ok(new SuccessResponse<User>("User Created", user));
         }
 
         [HttpPut]
@@ -53,14 +53,16 @@ namespace ScoreTracking.Controllers
         public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateUserRequest updateUserRequest)
         {
             var user = await this._userService.UpdateUser(id, updateUserRequest);
-            return Ok(new SuccessResponse("User Updated", user));
+            return Ok(new SuccessResponse<User>("User Updated", user));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id) 
         {
             await this._userService.DeleteUser(id);
-            return Ok(new SuccessResponse("User Deleted", null));
+            // can't remove generic type in case of absence of data. (to review)
+            // Probably creating a new class to handle this use case (without generic type)
+            return Ok(new SuccessResponse<NullabilityInfo>("User Deleted")); 
         }
 
     }
