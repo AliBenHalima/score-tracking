@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs.Responses
 {
-    public class SuccessResponse<T>
+    public class SuccessResponse
     {
         public string Message { get; set; }
         public SuccessResponse(string message)
