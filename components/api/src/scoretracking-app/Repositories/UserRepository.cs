@@ -34,13 +34,5 @@ namespace ScoreTracking.App.Repositories
         {
             return await Entity.Where(u => u.Phone == phone).AsNoTracking().FirstOrDefaultAsync();
         }
-
-        public async Task<IEnumerable<Game>> GetGamesByUser(int userId)
-        {
-           return await DatabaseContext.Users
-            .Where(u => u.Id == userId)
-            .SelectMany(u => u.Games)
-            .ToListAsync();
-        }
     }
 }

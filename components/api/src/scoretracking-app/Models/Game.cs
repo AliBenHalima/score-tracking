@@ -20,12 +20,12 @@ namespace ScoreTracking.App.Models
         public GameEndingType? EndingType { get; set; }
         public DateTimeOffset? StartedAt { get; set; }
         public DateTimeOffset? EndedAt { get; set; }
+        public DateTimeOffset? CanceledAt { get; set; }
         public bool HasJokerPenalty { get; set; }
         public int JokerPenaltyValue { get; set; }
+        [JsonIgnore]
         public List<User> Users { get; } = new();
-        public List<UserGame> UserGames { get; } = new();
-
-
-
+        [JsonIgnore]
+        public List<UserGame> UserGames { get; set; } = new();
     }
 }

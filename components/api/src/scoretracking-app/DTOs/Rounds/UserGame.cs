@@ -8,11 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.DTOs.Requests
+namespace ScoreTracking.App.DTOs
 {
-    public class CreateGameDTO
+    public class UserGame
     {
-        public string Code { get; set; }
-        public List<User> Users { get; set; } 
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int GameId { get; set; }
+        public User User { get; set; } = null!;
     }
 }

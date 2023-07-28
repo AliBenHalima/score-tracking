@@ -14,7 +14,7 @@ namespace ScoreTracking.App.Helpers.Exceptions
         public RessourceNotFoundException(string message, params object[] args)
       : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
-            statusCode = (int)HttpStatusCode.NotFound;
+            StatusCode = (int)HttpStatusCode.NotFound;
         }
     }
 }

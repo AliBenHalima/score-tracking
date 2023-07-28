@@ -37,7 +37,7 @@ namespace ScoreTracking.App.Middlewares
                 {
                     // Custom Application exception
                     case ScoreTrackingException exception:
-                        response.StatusCode = (int)exception.statusCode;
+                        response.StatusCode = (int)exception.StatusCode;
                         _logger.LogError(appError, appError.Message);
                         break;
                     default:

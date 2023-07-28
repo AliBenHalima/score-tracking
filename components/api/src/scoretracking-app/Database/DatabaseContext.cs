@@ -50,6 +50,7 @@ namespace ScoreTracking.App.Database
                 );
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Phone).IsUnique();
+            //
 
             modelBuilder.Entity<User>()
             .HasMany(e => e.Games)

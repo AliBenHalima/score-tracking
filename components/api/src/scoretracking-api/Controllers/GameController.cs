@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs;
+using ScoreTracking.App.DTOs.Requests.Games;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
@@ -9,11 +10,12 @@ using ScoreTracking.App.Models;
 using ScoreTracking.App.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.API.Controllers
 {
-    [Route("api")]
+    [Route("api/games")]
     [ApiController]
     public class GameController : ControllerBase
     {
@@ -26,13 +28,40 @@ namespace ScoreTracking.API.Controllers
             _gameRepository = gameRepository;
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<GenericSuccessResponse<GameDetailsDTO>>> GetGame([FromRoute] int id)
+        {
+            GameDetailsDTO gameDetails = await this._gameService.GetGame(id);
+            return Ok(new GenericSuccessResponse<GameDetailsDTO>("Game Fetched", gameDetails));
+        }
+
+
         [HttpPost]
-        [Route("games")]
-        public async Task<IActionResult> CreateGame(CreateGameRequest createGameRequest)
+        public async Task<ActionResult<GenericSuccessResponse<CreateGameDTO>>> CreateGame(CreateGameRequest createGameRequest)
         {
            CreateGameDTO gameDTO = await _gameService.CreateGame(createGameRequest);
            
-            return Ok(new SuccessResponse("Game Created", gameDTO));
+            return Ok(new GenericSuccessResponse<CreateGameDTO>("Game Created", gameDTO));
         }
+
+        [HttpPost]
+        [Route("{id}/add-players")]
+        public async Task<ActionResult<SuccessResponse>> AddPlayersToGame(int id, AddPlayersToGameRequest addPlayersToGameRequest)
+        {
+            await this._gameService.AddPlayersToGame(id, addPlayersToGameRequest.PlayerIds);
+            return Ok(new SuccessResponse("Game players added successfully"));
+        }
+
+        [HttpPut]
+        [Route("{id}/update-status")]
+        public async Task<ActionResult<SuccessResponse>> UpdateGameStatus(int id, UpdateGameStatusRequest updateGameStatusRequest)
+        {
+            await this._gameService.UpdateGameStatus(id, updateGameStatusRequest.Status) ;
+            return Ok(new SuccessResponse($"game {updateGameStatusRequest.Status} "));
+        }
+
+
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs;
+using ScoreTracking.App.DTOs.Requests.Games;
+using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
@@ -24,9 +26,7 @@ namespace ScoreTracking.App.Helpers
             );
 
             //DTOs
-            CreateMap<Game, CreateGameDTO>();
-
-            
+           // CreateMap<Game, CreateGameDTO>();
         }
     }
 }

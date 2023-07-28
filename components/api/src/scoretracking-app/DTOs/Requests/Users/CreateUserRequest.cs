@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.App.DTOs.Requests
+namespace ScoreTracking.App.DTOs.Requests.Users
 {
-    public class UpdateUserRequest
+    public class CreateUserRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -31,6 +31,10 @@ namespace ScoreTracking.App.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTimeOffset?>("CanceledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("canceled_at");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text")
@@ -91,6 +95,10 @@ namespace ScoreTracking.App.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer")
@@ -160,22 +168,22 @@ namespace ScoreTracking.App.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2192), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2023, 7, 28, 8, 13, 31, 920, DateTimeKind.Unspecified).AddTicks(6576), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "Test1@gmail.com",
                             FirstName = "Robert",
                             LastName = "Lara",
                             Phone = "+21600000001",
-                            Updated = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2204), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2023, 7, 28, 8, 13, 31, 920, DateTimeKind.Unspecified).AddTicks(6586), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2208), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2023, 7, 28, 8, 13, 31, 920, DateTimeKind.Unspecified).AddTicks(6589), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "Test2@gmail.com",
                             FirstName = "John",
                             LastName = "Doe",
                             Phone = "+21600000002",
-                            Updated = new DateTimeOffset(new DateTime(2023, 7, 21, 9, 29, 59, 610, DateTimeKind.Unspecified).AddTicks(2209), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2023, 7, 28, 8, 13, 31, 920, DateTimeKind.Unspecified).AddTicks(6589), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
@@ -205,15 +213,15 @@ namespace ScoreTracking.App.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_user_game");
+                        .HasName("pk_user_games");
 
                     b.HasIndex("GameId")
-                        .HasDatabaseName("ix_user_game_game_id");
+                        .HasDatabaseName("ix_user_games_game_id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_game_user_id");
+                        .HasDatabaseName("ix_user_games_user_id");
 
-                    b.ToTable("user_game", (string)null);
+                    b.ToTable("user_games", (string)null);
                 });
 
             modelBuilder.Entity("ScoreTracking.App.Models.UserGameRound", b =>
@@ -229,9 +237,17 @@ namespace ScoreTracking.App.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created");
 
+                    b.Property<int>("Jokers")
+                        .HasColumnType("integer")
+                        .HasColumnName("jokers");
+
                     b.Property<int>("RoundId")
                         .HasColumnType("integer")
                         .HasColumnName("round_id");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
 
                     b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone")
@@ -242,15 +258,15 @@ namespace ScoreTracking.App.Migrations
                         .HasColumnName("user_game_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_user_game_round");
+                        .HasName("pk_user_game_rounds");
 
                     b.HasIndex("RoundId")
-                        .HasDatabaseName("ix_user_game_round_round_id");
+                        .HasDatabaseName("ix_user_game_rounds_round_id");
 
                     b.HasIndex("UserGameId")
-                        .HasDatabaseName("ix_user_game_round_user_game_id");
+                        .HasDatabaseName("ix_user_game_rounds_user_game_id");
 
-                    b.ToTable("user_game_round", (string)null);
+                    b.ToTable("user_game_rounds", (string)null);
                 });
 
             modelBuilder.Entity("ScoreTracking.App.Models.UserGame", b =>
@@ -260,14 +276,14 @@ namespace ScoreTracking.App.Migrations
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_game_games_game_id");
+                        .HasConstraintName("fk_user_games_games_game_id");
 
                     b.HasOne("ScoreTracking.App.Models.User", "User")
                         .WithMany("UserGames")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_game_users_user_id");
+                        .HasConstraintName("fk_user_games_users_user_id");
 
                     b.Navigation("Game");
 
@@ -281,14 +297,14 @@ namespace ScoreTracking.App.Migrations
                         .HasForeignKey("RoundId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_game_round_rounds_round_id1");
+                        .HasConstraintName("fk_user_game_rounds_rounds_round_id1");
 
                     b.HasOne("ScoreTracking.App.Models.UserGame", "UserGame")
                         .WithMany("UserGameRounds")
                         .HasForeignKey("UserGameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_game_round_user_game_user_game_id1");
+                        .HasConstraintName("fk_user_game_rounds_user_games_user_game_id1");
 
                     b.Navigation("Round");
 

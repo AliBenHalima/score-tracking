@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ScoreTracking.App.Database;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Repositories;
@@ -79,11 +79,5 @@ namespace ScoreTracking.App.Services
 
              await _userRepository.Delete(user);
         }
-
-        public async Task<IEnumerable<Game>> GetUserGames(int id)
-        {
-            return await _userRepository.GetGamesByUser(id);
-        }
-
     }
 }

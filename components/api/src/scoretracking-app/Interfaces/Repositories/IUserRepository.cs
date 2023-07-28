@@ -12,7 +12,7 @@ namespace ScoreTracking.App.Interfaces.Repositories
     {
         Task<User> FindByEmail(string email);
         Task<User> FindByPhone(string phone);
-        Task<IEnumerable<Game>> GetGamesByUser(int userId);
+        //Task<IEnumerable<Game>> GetGamesByUser(int userId);
 
 
     }

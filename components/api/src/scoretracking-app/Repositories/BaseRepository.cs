@@ -21,39 +21,44 @@ namespace ScoreTracking.App.Repositories
             DatabaseContext = databaseContext;
             Entity = databaseContext.Set<T>();
         }
+
         public virtual async Task<IEnumerable<T>> FindAll()
         {
             return await Entity.AsNoTracking().ToListAsync();
         }
+
         public virtual async Task<T?> FindByCondition(Expression<Func<T, bool>> expression)
         {
             return await Entity.Where(expression).AsNoTracking().FirstOrDefaultAsync();
         }
-        public async Task<T> FindById(int id)
+
+        public virtual async Task<T> FindById(int id)
         {
-            return await Entity.Where(u => u.Id == id).AsNoTracking().FirstAsync();
+            return await Entity.Where(u => u.Id == id).FirstOrDefaultAsync();
         }
+
         public async Task<IEnumerable<T>> FindByIds(IEnumerable<int> ids)
         {
             return await Entity.Where(u => ids.Any(x => x == u.Id)).ToListAsync();
         }
-
-
 
         public virtual async Task<T> Create(T entity)
         {
             Entity.Add(entity);
             await DatabaseContext.SaveChangesAsync();
             return entity;
-           
+
         }
+
         public virtual async Task<T> Update(T entity)
         {
             Entity.Update(entity);
             await DatabaseContext.SaveChangesAsync();
             return entity;
         }
-        public virtual async Task Delete(T entity) {
+
+        public virtual async Task Delete(T entity)
+        {
             Entity.Remove(entity);
             await DatabaseContext.SaveChangesAsync();
         }

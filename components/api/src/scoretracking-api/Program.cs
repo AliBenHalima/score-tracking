@@ -31,10 +31,13 @@ builder.Services.AddControllers().AddFluentValidation(x =>
 //Reposirtories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IRoundRepository, RoundRepository>();
+
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IRoundService, RoundService>();
 
 builder.Services.AddSwaggerGen();
 
