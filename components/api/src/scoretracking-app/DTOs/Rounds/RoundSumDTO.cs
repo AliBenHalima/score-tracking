@@ -10,13 +10,9 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs
 {
-    public class UserGameRoundDTO
+    public class RoundSumDTO
     {
-        public int Id { get; set; }
-        public int UserGameId { get; set; }
-        public int RoundId { get; set; }
-        public int Jokers { get; set; }
-        public UserGameDTO UserGame { get; set; } = null!;
-
+        public int UserId { get; set; }
+        public int Sum { get; set; }
     }
 }

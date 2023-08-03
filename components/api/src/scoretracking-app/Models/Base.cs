@@ -9,7 +9,7 @@ namespace ScoreTracking.App.Models
     public class Base
     {
         public int Id { get; set; }
-        public DateTimeOffset Created { get; set; } = DateTime.UtcNow;
-        public DateTimeOffset Updated { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

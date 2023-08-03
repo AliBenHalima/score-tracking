@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs
 {
-    public class UserGame
+    public class UserGameDTO
     {
         public int Id { get; set; }
         public int UserId { get; set; }

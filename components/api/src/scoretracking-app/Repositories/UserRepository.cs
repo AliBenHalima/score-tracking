@@ -26,13 +26,14 @@ namespace ScoreTracking.App.Repositories
             await DatabaseContext.SaveChangesAsync();
              return user;
         }
-        public async Task<User> FindByEmail(string email)
+        public async Task<User?> FindByEmail(string email)
         {
             return await Entity.Where(u => u.Email == email).AsNoTracking().FirstOrDefaultAsync();
         }
-        public async Task<User> FindByPhone(string phone)
+        public async Task<User?> FindByPhone(string phone)
         {
             return await Entity.Where(u => u.Phone == phone).AsNoTracking().FirstOrDefaultAsync();
         }
+
     }
 }

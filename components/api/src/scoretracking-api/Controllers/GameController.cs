@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs;
 using ScoreTracking.App.DTOs.Requests.Games;
 using ScoreTracking.App.DTOs.Responses;
@@ -10,6 +11,7 @@ using ScoreTracking.App.Models;
 using ScoreTracking.App.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -29,9 +31,19 @@ namespace ScoreTracking.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<GenericSuccessResponse<GameDetailsDTO>>> GetGame([FromRoute] int id)
+        [Route("users/{id}")]
+        public async Task<ActionResult<GenericSuccessResponse<List<Game>>>> GetGamesByUser([FromRoute] int id)
         {
+            IEnumerable<Game> games = await this._gameService.GetGamesByUser(id);
+            return Ok(new GenericSuccessResponse<IEnumerable<Game>>("Game Fetched", games));
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<GenericSuccessResponse<GameDetailsDTO>>> GetGame([FromRoute] int id, DatabaseContext databaseContext)
+        {
+
+
             GameDetailsDTO gameDetails = await this._gameService.GetGame(id);
             return Ok(new GenericSuccessResponse<GameDetailsDTO>("Game Fetched", gameDetails));
         }

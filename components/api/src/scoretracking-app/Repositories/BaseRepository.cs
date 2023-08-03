@@ -47,7 +47,6 @@ namespace ScoreTracking.App.Repositories
             Entity.Add(entity);
             await DatabaseContext.SaveChangesAsync();
             return entity;
-
         }
 
         public virtual async Task<T> Update(T entity)

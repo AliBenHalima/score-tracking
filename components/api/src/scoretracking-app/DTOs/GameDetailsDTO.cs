@@ -1,4 +1,5 @@
-﻿using ScoreTracking.App.Enum;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using ScoreTracking.App.Enum;
 using ScoreTracking.App.Models;
 using ScoreTracking.App.Validations;
 using System;
@@ -23,6 +24,6 @@ namespace ScoreTracking.App.DTOs
         public bool HasJokerPenalty { get; set; }
         public int JokerPenaltyValue { get; set; }
         public List<Round> Rounds { get; set; }
-
+        public List<RoundSumDTO> RoundSum { get; set; }
     }
 }

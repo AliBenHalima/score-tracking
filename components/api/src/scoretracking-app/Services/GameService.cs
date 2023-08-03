@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.VisualBasic;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs;
 using ScoreTracking.App.DTOs.Requests.Games;
+using ScoreTracking.App.DTOs.Requests.Rounds;
 using ScoreTracking.App.Enum;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
@@ -20,6 +22,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Constants = ScoreTracking.App.Helpers.Constants;
 using UserGame = ScoreTracking.App.Models.UserGame;
 
@@ -28,21 +31,28 @@ namespace ScoreTracking.App.Services
     public class GameService : IGameService
     {
         private readonly IMapper _mapper;
+        private readonly DatabaseContext _databaseContext;
         private readonly IGameRepository _gameRepository;
         private readonly IUserRepository _userRepository;
-        private readonly DatabaseContext _databaseContext;
+        private readonly IRoundRepository _roundRepository;
 
-        public GameService(IMapper mapper, IGameRepository gameRepository, IUserRepository userRepository, DatabaseContext databaseContext)
+        public GameService(IMapper mapper, DatabaseContext databaseContext, IGameRepository gameRepository, IUserRepository userRepository, IRoundRepository roundRepository)
         {
             _mapper = mapper;
+            _databaseContext = databaseContext;
             _gameRepository = gameRepository;
             _userRepository = userRepository;
-            _databaseContext = databaseContext;
+            _roundRepository = roundRepository;        
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesByUser(int userId)
+        {
+           return await _gameRepository.GetGamesByUser(userId);
         }
 
         public async Task<CreateGameDTO> CreateGame(CreateGameRequest createGameRequest)
         {
-            using ( IDbContextTransaction transaction = _databaseContext.Database.BeginTransaction())
+            using (IDbContextTransaction transaction = _databaseContext.Database.BeginTransaction())
             {
                 try
                 {
@@ -70,6 +80,7 @@ namespace ScoreTracking.App.Services
                     transaction.Rollback();
                     throw new Exception("Error creating game");
                 }
+
             }
         }
 
@@ -82,7 +93,7 @@ namespace ScoreTracking.App.Services
             VerifyPlayersExistance(players, playerIds);
             VerifyGameMaxPlayersCount(game, game.UserGames.Count(), players.Count());
             VerifyPlayersAreNotGameMembers(players, game.UserGames);
-            if (!IsGameStarted(game) && !IsGameCanceled(game)) throw new BadRequestException("Can't create game, verify game status");
+            if (IsGameStarted(game) && IsGameCanceled(game)) throw new BadRequestException("Can't create game, verify game status");
             await _gameRepository.AddPlayersToGame(game, players);
         }
         public async Task<GameDetailsDTO> GetGame(int id)
@@ -115,8 +126,112 @@ namespace ScoreTracking.App.Services
                 if (IsGameCanceled(game)) throw new BadRequestException($"Game already canceled at {game.CanceledAt}");
                 await _gameRepository.CancelGame(game);
             }
+        }
+
+        //Rounds
+
+        public async Task AddRound(int gameId, AddRoundRequest addRoundRequest)
+        {
+            using (IDbContextTransaction transaction = _databaseContext.Database.BeginTransaction())
+            {
+                try
+                {
+            Game game = await _gameRepository.FindById(gameId);
+            if (game is null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(Game).Name);
+            IEnumerable<int> userIds = ExtractUsersFromRoundInformation(addRoundRequest.RoundInformation.ToList());
+            IEnumerable<int> gamePlayers = await _gameRepository.GameHasPlayers(gameId);
+            bool gameHasPlayers = gamePlayers.Any(userId => userIds.Contains(userId));
+            if (!gameHasPlayers) throw new BadRequestException("Error creating round, players are not game members");
+            if (IsGameCanceled(game)) throw new BadRequestException($"Can't add round, game was canceled at {0}", game.CanceledAt);
+            if (!IsGameStarted(game)) throw new BadRequestException($"Game must be started first");
+            if (IsGameEnded(game)) throw new BadRequestException($"Game already ended at {0}", game.EndedAt);
+            // Create Round
+
+            //int roundNumber = await _roundRepository.GetLatestRound();
+            Round? latestGameRound = await _gameRepository.GetGameLatestRound(gameId);
+          
+            Round round = new Round
+            {
+                Number = (latestGameRound is null) ? Constants.RoundConstants.StartingNumber : ++latestGameRound.Number,
+                Status = addRoundRequest.Status
+            };
+            IEnumerable<UserGame> userGames = await _gameRepository.GetGameUsers(gameId);
+            Round createdRound = await _roundRepository.Create(round);
+            List<UserGameRound> userGameRounds = CreateUserGameRoundList(addRoundRequest.RoundInformation, userGames, createdRound, game);
+            await _roundRepository.AddRoundScores(round, userGameRounds);
+                   bool GameHasPlayers =  await GameHasPlayersLeft(game);
+                    if (!GameHasPlayers) await _gameRepository.EndGame(game);
+                    transaction.Commit();
+
+                }
+                catch (ScoreTrackingException exception)
+                {
+                    transaction.Rollback();
+                    throw new ScoreTrackingException(exception.Message, exception.StatusCode);
+                }
+                catch (Exception exception)
+                {
+                    transaction.Rollback(); 
+                    throw new Exception("Error adding round");
+                }
+            }
+        }
+
+        private async Task<bool> GameHasPlayersLeft(Game game)
+        {
+            IEnumerable<RoundSumDTO> roundSum = await _roundRepository.GetRoundSumScoresByPlayer(game.Id);
+            int filteredRoundCount = roundSum.Where(r => r.Sum <= game.Score).ToList().Count(); // players with scoe <= max game score.
+            return (filteredRoundCount >= Constants.GameConstants.MaxPlayersCount) ? true : false; // check if players left is > 3 
 
         }
+
+        public async Task<Round> UpdateRoundScore(int gameId, int roundId, UpdateRoundRequest updateRoundRequest)
+        {
+            Game game = await _gameRepository.FindById(gameId);
+            if (game is null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(Game).Name);
+            Round round = await _roundRepository.FindById(roundId);
+            if (round is null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(Round).Name);
+
+             return await _roundRepository.updateRoundScore(game, round, updateRoundRequest.RoundInformation);
+        }
+
+        private List<UserGameRound> CreateUserGameRoundList(IEnumerable<RoundInformationDTO> roundInformation, IEnumerable<UserGame> userGames, Round createdRound, Game game)
+        {
+            List<UserGameRound> userGameRounds = new List<UserGameRound>();
+            foreach (RoundInformationDTO roundInfo in roundInformation)
+            {
+                int UserGameId = userGames.Where(ug => ug.UserId == roundInfo.UserId).First().Id;
+                userGameRounds.Add(new UserGameRound()
+                {
+                    UserGameId = UserGameId,
+                    RoundId = createdRound.Id,
+                    Jokers = roundInfo.JokerCount,
+                    Score = (roundInfo.Score + CalculateJokerAdditionalScore(game, roundInfo.JokerCount)),
+                });
+            }
+            return userGameRounds;
+        }
+
+        private int CalculateJokerAdditionalScore(Game game, int jokerCount)
+        {
+            //Calculates the sum of jokers based on game options.
+            if (game.HasJokerPenalty)
+            {
+                return (jokerCount * game.JokerPenaltyValue);
+            }
+            return 0;
+        }
+
+        private IEnumerable<int> ExtractUsersFromRoundInformation(List<RoundInformationDTO> roundInformation)
+        {
+            List<int> userIds = new List<int>();
+            foreach(RoundInformationDTO round in roundInformation)
+            {
+                userIds.Add(round.UserId);
+            }
+            return userIds;
+        }
+
         private void VerifyPlayersExistance(IEnumerable<User> players, IEnumerable<int> playerIds)
         {
             if (players.Count() != playerIds.Count())
@@ -141,6 +256,10 @@ namespace ScoreTracking.App.Services
         private bool IsGameCanceled(Game game)
         {
             return game.CanceledAt is not null;
+        }
+        private bool IsGameEnded(Game game)
+        {
+            return game.EndedAt is not null;
         }
 
     }

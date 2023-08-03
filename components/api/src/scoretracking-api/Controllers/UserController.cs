@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests.Users;
@@ -26,6 +28,7 @@ namespace ScoreTracking.Controllers
             _userService = userService;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<GenericSuccessResponse<List<User>>>> GetUsers()
         {
