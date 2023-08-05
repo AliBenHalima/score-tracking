@@ -33,7 +33,7 @@ namespace ScoreTracking.App.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json";
 
-                switch (appError)
+                 switch (appError)
                 {
                     // Custom Application exception
                     case ScoreTrackingException exception:

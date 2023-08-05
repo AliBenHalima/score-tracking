@@ -17,6 +17,9 @@ namespace ScoreTracking.App.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string? Password { get; set; }
+        public DateTimeOffset? PasswordChangedAt { get; set; }
+        public DateTimeOffset? VerifiedAt { get; set; }
         [JsonIgnore]
         public List<Game> Games { get; } = new();
         [JsonIgnore]

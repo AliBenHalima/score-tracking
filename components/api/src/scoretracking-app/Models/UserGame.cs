@@ -16,8 +16,10 @@ namespace ScoreTracking.App.Models
         public int UserId{ get; set; }
         public int GameId { get; set; }
         public User User { get; set; } = null!;
-        public Game Game { get; set; } = null!;   
+        public Game Game { get; set; } = null!;
+        [JsonIgnore]
         public List<Round> Rounds { get; } = new();
+        [JsonIgnore]
         public List<UserGameRound> UserGameRounds { get; } = new();
     }
 }

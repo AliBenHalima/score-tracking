@@ -17,9 +17,9 @@ namespace ScoreTracking.App.Models
     {
         public int Number { get; set; }
         public GameRoundStatus Status { get; set; } = GameRoundStatus.Played;
-   
+        [JsonIgnore]
         public List<UserGame> UserGames { get; } = new();
-        
+        [JsonIgnore]
         public List<UserGameRound> UserGameRounds { get; } = new();
     }
 }

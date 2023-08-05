@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.App.DTOs.Requests.Rounds
 {
-    public class AddRoundRequest
+    public class UpdateRoundRequest
     {
-        public int GameId { get; set; }
-        public GameRoundStatus Status { get; set; }
         public IEnumerable<RoundInformationDTO> RoundInformation { get; set; }
 
     }
