@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs.Requests.Users;
+using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,10 @@ namespace ScoreTracking.App.Validations.UserValidators
     {
         public CreateUserValidator()
         {
-            RuleFor(x => x.FirstName).Length(2, 100).NotEmpty();
-            RuleFor(x => x.LastName).Length(2, 100).NotEmpty();
+            RuleFor(x => x.FirstName).Length(Constants.UserConstants.MinNameLength, Constants.UserConstants.MaxNameLength).NotEmpty();
+            RuleFor(x => x.LastName).Length(Constants.UserConstants.MinNameLength, Constants.UserConstants.MaxNameLength).NotEmpty();
             RuleFor(x => x.Email).EmailAddress();
-            RuleFor(x => x.Phone).Matches(@"^\+\d{1,3}\s?\d{6,14}$").WithMessage("Invalid phone number format.");
+            RuleFor(x => x.Phone).Matches(Constants.UserConstants.PhoneRegex).WithMessage("Invalid phone number format.");
         }
     }
 }

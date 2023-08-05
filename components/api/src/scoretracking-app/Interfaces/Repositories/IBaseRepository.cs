@@ -13,6 +13,7 @@ namespace ScoreTracking.App.Interfaces.Repositories
     {
         Task<IEnumerable<T>> FindAll();
         Task<T> FindById(int id);
+        Task<IEnumerable<T>> FindByIds(IEnumerable<int> ids);
         Task<T?> FindByCondition(Expression<Func<T, bool>> expression);
         Task<T> Create(T entity);
         Task<T> Update(T entity);

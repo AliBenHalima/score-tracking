@@ -12,5 +12,11 @@ namespace ScoreTracking.App.Helpers
         {
             return firstValue == secondValue;
         }
+
+        public static string generateRandom(int min = 1000, int max= 9999)
+        {
+            Random random = new Random();
+            return random.Next(min, max).ToString();
+        }
     }
 }

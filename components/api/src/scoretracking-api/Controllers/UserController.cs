@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScoreTracking.App.Database;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Services;
@@ -27,42 +27,43 @@ namespace ScoreTracking.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<ActionResult<GenericSuccessResponse<List<User>>>> GetUsers()
         {
             IEnumerable<User> users = await this._userService.GetUsers();
-            return Ok(new SuccessResponse<IEnumerable<User>>("Users Fetched", users));
+            return Ok(new GenericSuccessResponse<IEnumerable<User>>("Users Fetched", users));
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
+        public async Task<ActionResult<GenericSuccessResponse<User>>> GetUser([FromRoute] int id)
         {
             User user = await this._userService.GetUser(id);
-            return Ok(new SuccessResponse<User>("User Fetched", user));
+            return Ok(new GenericSuccessResponse<User>("User Fetched", user));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserRequest createUserRequest)
+        public async Task<ActionResult<GenericSuccessResponse<User>>> CreateUser(CreateUserRequest createUserRequest)
         {
            var user = await this._userService.CreateUser(createUserRequest);
-            return Ok(new SuccessResponse<User>("User Created", user));
+            return Ok(new GenericSuccessResponse<User>("User Created", user));
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, UpdateUserRequest updateUserRequest)
+        public async Task<ActionResult<GenericSuccessResponse<User>>> UpdateUser([FromRoute] int id, UpdateUserRequest updateUserRequest)
         {
             var user = await this._userService.UpdateUser(id, updateUserRequest);
-            return Ok(new SuccessResponse<User>("User Updated", user));
+            return Ok(new GenericSuccessResponse<User>("User Updated", user));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id) 
+        public async Task<ActionResult<SuccessResponse>> DeleteUser(int id) 
         {
             await this._userService.DeleteUser(id);
             // can't remove generic type in case of absence of data. (to review)
             // Probably creating a new class to handle this use case (without generic type)
-            return Ok(new SuccessResponse<NullabilityInfo>("User Deleted")); 
+            return Ok(new SuccessResponse("User Deleted")); 
         }
+
     }
 }

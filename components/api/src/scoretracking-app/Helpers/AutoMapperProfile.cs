@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs;
+using ScoreTracking.App.DTOs.Requests.Games;
+using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
@@ -14,8 +16,17 @@ namespace ScoreTracking.App.Helpers
     {
         public AutoMapperProfile()
         {
+            //Requests
             CreateMap<CreateUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
+            CreateMap<CreateGameRequest, Game>()
+            .ForMember(
+                dest => dest.Code,
+                opt => opt.MapFrom(src => GlobalHelper.generateRandom(1000,9999))
+            );
+
+            //DTOs
+            CreateMap<Game, CreateGameDTO>();
         }
     }
 }

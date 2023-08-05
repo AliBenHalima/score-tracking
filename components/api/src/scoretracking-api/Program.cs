@@ -14,20 +14,30 @@ using FluentValidation.AspNetCore;
 using System.Reflection;
 using FluentValidation;
 using ScoreTracking.App.DTOs.Requests;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
 builder.Services.AddAutoMapper(typeof(IModuleMarker).Assembly);
-//Services
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers().AddFluentValidation(x =>
 {
     x.ImplicitlyValidateChildProperties = true;
     x.RegisterValidatorsFromAssembly(typeof(IModuleMarker).Assembly);
-});
+}).AddJsonOptions(x =>
+
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+//Reposirtories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IRoundRepository, RoundRepository>();
+
+
+//Services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IRoundService, RoundService>();
 
 builder.Services.AddSwaggerGen();
 
