@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using ScoreTracking.App.DTOs.Emails;
 using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
+using ScoreTracking.App.Interfaces.Queues;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using System;
@@ -19,13 +21,18 @@ namespace ScoreTracking.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IEmailService _emailService;
+        private readonly IEmailQueue _emailQueue;
+
         private readonly IMapper _mapper;
 
-        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService, IEmailQueue emailQueue)
         {
             _userService = userService;
             _authenticationService = authenticationService;
             _mapper = mapper;
+            _emailService = emailService;
+            _emailQueue = emailQueue;
         }
 
         [HttpPost]
@@ -45,6 +52,14 @@ namespace ScoreTracking.API.Controllers
             string token = await _authenticationService.Signin(signinUserRequest);
             
             return Ok(new GenericSuccessResponse<string>("Success", token));
+        }
+
+        [HttpPost]
+        [Route("send-email")]
+        public async Task<ActionResult> SendEmail(EmailDataDTO htmlEmailData)
+        {
+            _emailQueue.EnQueueEmailTask(htmlEmailData);
+            return Ok();
         }
     }
 }

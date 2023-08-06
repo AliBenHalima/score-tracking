@@ -24,6 +24,9 @@ using Microsoft.VisualBasic.FileIO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using ScoreTracking.App.Interfaces.Queues;
+using ScoreTracking.App.BackgroundJobs.Queues;
+using ScoreTracking.App.BackgroundJobs.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,12 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IEmailQueue, InMemoryEmailQueue>();
+
+
+//Hosted Services 
+builder.Services.AddHostedService<BackgroundEmailJob>();
 
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
@@ -90,19 +99,34 @@ builder.Services.AddSwaggerGen(options =>
              new string[] {}
      }
  });
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Score Trackig API",
+        Version = "v1",
+        Description = "Score Trackig Web API Documetatio",
+        Contact = new OpenApiContact
+        {
+            Name = "Contact",
+            Email = "score-trackig@gmail.com",
+            Url = new Uri("https://example.com/contact"),
+        },
+    });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
 builder.Services.ConfigureOptions<JwtOptionSetup>();
-
 builder.Services.ConfigureOptions<JwtBearerOptionSetup>();
+builder.Services.ConfigureOptions<MailSettingsSetup>();
 
 
 var app = builder.Build();
  
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+});
 app.UseAuthorization();
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
