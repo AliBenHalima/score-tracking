@@ -58,7 +58,7 @@ builder.Services.AddLogging();
 
 
 
-BenchmarkRunner.Run<TestClass>();
+//BenchmarkRunner.Run<TestClass>();
 
 //Hosted Services
 

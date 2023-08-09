@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using BenchmarkDotNet.Attributes;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using ScoreTracking.App.DTOs.Emails;
@@ -9,14 +6,10 @@ using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
 using ScoreTracking.App.Helpers;
-using ScoreTracking.App.Interfaces.Queues;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using ScoreTracking.Extensions.Email.Contratcs;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.API.Controllers

@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Npgsql;
 using ScoreTracking.Extensions.Email.Contracts;
 using ScoreTracking.Extensions.Email.Contratcs;
 using ScoreTracking.Extensions.Email.Infrastructure;
-using System.Collections.Concurrent;
 
 namespace ScoreTracking.Extensions.Email.Services
 {
@@ -23,14 +21,11 @@ namespace ScoreTracking.Extensions.Email.Services
 
         public async Task Enqueue(EmailMessage email, CancellationToken cancellationToken = default)
         {
-            throw new TaskCanceledException("The operation was canceled.");
-
-
-            //if (cancellationToken.IsCancellationRequested)
-            //{
-            //    throw new TaskCanceledException("The operation was canceled.");
-            //}
-            // await _emailRepository.InsertIntoEmailQueueAsync(email);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            await _emailRepository.InsertIntoEmailQueueAsync(email);
         }
 
         public async Task<EmailMessage> GetAsync(CancellationToken cancellationToken = default)
@@ -58,5 +53,5 @@ namespace ScoreTracking.Extensions.Email.Services
         }
     }
 }
-            
-      
+
+

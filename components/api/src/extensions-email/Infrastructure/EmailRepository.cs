@@ -1,15 +1,8 @@
-﻿using Microsoft.Diagnostics.Tracing.Parsers.MicrosoftWindowsWPF;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Npgsql;
 using ScoreTracking.Extensions.Email.Contracts;
-using ScoreTracking.Extensions.Email.Contratcs;
 using ScoreTracking.Extensions.Email.Options;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ScoreTracking.Extensions.Email.Contratcs
 {
@@ -25,27 +18,26 @@ namespace ScoreTracking.Extensions.Email.Contratcs
         {
             using var connection = new NpgsqlConnection(_databaseOption.ConnectionString);
             connection.Open();
-            using (var insertCommand = new NpgsqlCommand(@"INSERT INTO email_queue (ReceiverName, ReceiverAddress, Content, Subject) VALUES (@ReceiverName, @ReceiverAddress, @Content, @Subject) RETURNING Id", connection))
-            {
-                insertCommand.Parameters.AddWithValue("@ReceiverName", email.ReceiverName);
-                insertCommand.Parameters.AddWithValue("@ReceiverAddress", email.ReceiverAddress);
-                insertCommand.Parameters.AddWithValue("@Content", email.Content);
-                insertCommand.Parameters.AddWithValue("@Subject", email.Subject);
 
-                int? insertedId = (int)await insertCommand.ExecuteScalarAsync();
-                return insertedId;
-            }
+            using var insertCommand = new NpgsqlCommand(@"INSERT INTO email_queue (ReceiverName, ReceiverAddress, Content, Subject) VALUES (@ReceiverName, @ReceiverAddress, @Content, @Subject) RETURNING Id", connection);
+            insertCommand.Parameters.AddWithValue("@ReceiverName", email.ReceiverName);
+            insertCommand.Parameters.AddWithValue("@ReceiverAddress", email.ReceiverAddress);
+            insertCommand.Parameters.AddWithValue("@Content", email.Content);
+            insertCommand.Parameters.AddWithValue("@Subject", email.Subject);
+            int? insertedId = (int)await insertCommand.ExecuteScalarAsync();
+            return insertedId;
+
         }
 
         public async Task MarkEmailQueueAsProcessedAsync(string id)
         {
             using var connection = new NpgsqlConnection(_databaseOption.ConnectionString);
             connection.Open();
-            using (var insertCommand = new NpgsqlCommand(@"UPDATE email_queue SET IsProcessed = true WHERE Id = @Id", connection))
-            {
-                insertCommand.Parameters.AddWithValue("@Id", Int32.Parse(id));
-                var rowsAffected = await insertCommand.ExecuteNonQueryAsync();
-            }
+            using var insertCommand = new NpgsqlCommand(@"UPDATE email_queue SET IsProcessed = true WHERE Id = @Id", connection);
+
+            insertCommand.Parameters.AddWithValue("@Id", Int32.Parse(id));
+            var rowsAffected = await insertCommand.ExecuteNonQueryAsync();
+
         }
 
         public async Task<EmailQueueEntity> RemoveLatestItemAsync()
@@ -54,36 +46,32 @@ namespace ScoreTracking.Extensions.Email.Contratcs
             try
             {
                 EmailQueueEntity message = default;
-                using (var connection = new NpgsqlConnection(_databaseOption.ConnectionString))
+                using var connection = new NpgsqlConnection(_databaseOption.ConnectionString);
+                connection.Open();
+
+                using var selectCommand = new NpgsqlCommand(@"SELECT * FROM email_queue WHERE IsProcessed = false ORDER BY CreatedAt ASC LIMIT 1", connection);
+
+                using var reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    connection.Open();
-
-                    using (var selectCommand = new NpgsqlCommand(@"SELECT * FROM email_queue WHERE IsProcessed = false ORDER BY CreatedAt ASC LIMIT 1", connection))
+                    message = new EmailQueueEntity
                     {
-                        using (var reader = selectCommand.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                message = new EmailQueueEntity
-                                {
-                                    Id = reader.GetInt32(reader.GetOrdinal("Id")).ToString(),
-                                    ReceiverName = reader.GetString(reader.GetOrdinal("ReceiverName")),
-                                    ReceiverAddress = reader.GetString(reader.GetOrdinal("ReceiverAddress")),
-                                    Content = reader.GetString(reader.GetOrdinal("Content")),
-                                    Subject = reader.GetString(reader.GetOrdinal("Subject")),
-                                    IsProcessed = reader.GetBoolean(reader.GetOrdinal("IsProcessed")),
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                                };
-
-                            }
-                        }
-                    }
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")).ToString(),
+                        ReceiverName = reader.GetString(reader.GetOrdinal("ReceiverName")),
+                        ReceiverAddress = reader.GetString(reader.GetOrdinal("ReceiverAddress")),
+                        Content = reader.GetString(reader.GetOrdinal("Content")),
+                        Subject = reader.GetString(reader.GetOrdinal("Subject")),
+                        IsProcessed = reader.GetBoolean(reader.GetOrdinal("IsProcessed")),
+                        CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                    };
                 }
                 return message;
             }
 
-            catch (Exception ex) {
-                return null;
+            catch (Exception ex)
+            {
+                throw new Exception("Can't send email");
             }
         }
         public async Task<bool> DatabaseHasItemAsync()
@@ -102,11 +90,10 @@ namespace ScoreTracking.Extensions.Email.Contratcs
         {
             using var connection = new NpgsqlConnection(_databaseOption.ConnectionString);
             connection.Open();
-            using (var insertCommand = new NpgsqlCommand(@"UPDATE email_queue SET IsSuccessful = true WHERE Id = @Id", connection))
-            {
-                insertCommand.Parameters.AddWithValue("@Id", Int32.Parse(id));
-                var rowsAffected = await insertCommand.ExecuteNonQueryAsync();
-            }
+            using var insertCommand = new NpgsqlCommand(@"UPDATE email_queue SET IsSuccessful = true WHERE Id = @Id", connection);
+
+            insertCommand.Parameters.AddWithValue("@Id", Int32.Parse(id));
+            var rowsAffected = await insertCommand.ExecuteNonQueryAsync();
         }
     }
 }

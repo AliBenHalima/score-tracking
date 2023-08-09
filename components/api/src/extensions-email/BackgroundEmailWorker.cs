@@ -25,12 +25,10 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
 
             try
             {
-
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     try
                     {
-
                         var hasItem = await _emailQueue.HasItem(stoppingToken);
                         if (hasItem)
                         {
@@ -48,7 +46,6 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
 
 
                             var circuitBreaker = Policy.Handle<Exception>()
-
                                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, TimeSpan.FromSeconds(30), (ex, timespan) => OnBreak(ex, timespan), OnReset());
 
                             var policy = retryPolicy.WrapAsync(circuitBreaker);
@@ -88,7 +85,6 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
         private void OnBreak(Exception exception, TimeSpan timespan)
         {
             _logger.LogWarning("Circuit has been broken after {timespan}", timespan);
-            _logger.LogError("Circuit Break Error", exception.Message);
         }
         private Action OnReset()
         {
