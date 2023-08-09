@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BenchmarkDotNet.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,15 @@ using ScoreTracking.App.DTOs.Emails;
 using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
+using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Queues;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
+using ScoreTracking.Extensions.Email.Contratcs;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.API.Controllers
@@ -22,17 +28,15 @@ namespace ScoreTracking.API.Controllers
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IEmailService _emailService;
-        private readonly IEmailQueue _emailQueue;
 
         private readonly IMapper _mapper;
 
-        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService, IEmailQueue emailQueue)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService)
         {
             _userService = userService;
             _authenticationService = authenticationService;
             _mapper = mapper;
             _emailService = emailService;
-            _emailQueue = emailQueue;
         }
 
         [HttpPost]
@@ -56,10 +60,23 @@ namespace ScoreTracking.API.Controllers
 
         [HttpPost]
         [Route("send-email")]
-        public async Task<ActionResult> SendEmail(EmailDataDTO htmlEmailData)
+        public async Task<ActionResult> SendEmail(EmailDataDTO email)
         {
-            _emailQueue.EnQueueEmailTask(htmlEmailData);
+            string filePath = Directory.GetCurrentDirectory() + "\\Templates\\EmailTemplate.html";
+            string emailTemplateText = System.IO.File.ReadAllText(filePath);
+            emailTemplateText = emailTemplateText.Replace("{{UserName}}", email.ReceiverName);
+
+            var emailMessage = new EmailMessage
+            {
+                Id = GlobalHelper.generateRandom(),
+                ReceiverName = email.ReceiverName,
+                ReceiverAddress = email.ReceiverAddress,
+                Content = emailTemplateText,
+                Subject = email.EmailSubject
+            };
+            await _emailService.SendAsync(emailMessage);
             return Ok();
         }
+    
     }
 }

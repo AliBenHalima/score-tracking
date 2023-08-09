@@ -20,13 +20,14 @@ using ScoreTracking.App.Options.OptionSetup;
 using ScoreTracking.App.Providers;
 using ScoreTracking.App.Interfaces.Providers;
 using Microsoft.OpenApi.Models;
-using Microsoft.VisualBasic.FileIO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using ScoreTracking.App.Interfaces.Queues;
-using ScoreTracking.App.BackgroundJobs.Queues;
-using ScoreTracking.App.BackgroundJobs.Jobs;
+using ScoreTracking.Extensions.Email;
+using BenchmarkDotNet.Running;
+using ScoreTracking.API.Controllers;
+using ScoreTracking.API;
+using ScoreTracking.App;
+using ScoreTracking.Extensions.Email.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,6 @@ builder.Services.AddControllers().AddFluentValidation(x =>
     x.ImplicitlyValidateChildProperties = true;
     x.RegisterValidatorsFromAssembly(typeof(IModuleMarker).Assembly);
 }).AddJsonOptions(x =>
-
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 //Reposirtories
@@ -46,18 +46,22 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IRoundRepository, RoundRepository>();
 
 
+
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
-builder.Services.AddSingleton<IEmailQueue, InMemoryEmailQueue>();
+builder.Services.AddMailing();
+builder.Services.AddLogging();
 
 
-//Hosted Services 
-builder.Services.AddHostedService<BackgroundEmailJob>();
+
+BenchmarkRunner.Run<TestClass>();
+
+//Hosted Services
+
 
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {

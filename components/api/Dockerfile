@@ -3,6 +3,7 @@ WORKDIR /build
 COPY ./ScoreTracking.Build.sln ./
 COPY ./src/scoretracking-api/ScoreTracking.API.csproj ./src/scoretracking-api/
 COPY ./src/scoretracking-app/ScoreTracking.App.csproj ./src/scoretracking-app/
+COPY ./src/extensions-email/ScoreTracking.Extensions.Email.csproj ./src/extensions-email/
 RUN dotnet restore ScoreTracking.Build.sln
 
 FROM env AS build-env
