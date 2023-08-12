@@ -67,7 +67,6 @@ namespace ScoreTracking.App.Services
             User? userByPhone = await _userRepository.FindByPhone(updateUserRequest.Phone);
             if (userByPhone is not null && !GlobalHelper.AreIntegersEqual(userByPhone.Id, id)) throw new BadRequestException("Phone number already exists");
 
-            this._mapper.Map(updateUserRequest, userById);
             return await _userRepository.Update(userById);
         }
 

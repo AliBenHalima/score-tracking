@@ -29,7 +29,7 @@ namespace ScoreTracking.App.Repositories
 
         public virtual async Task<T?> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return await Entity.Where(expression).AsNoTracking().FirstOrDefaultAsync();
+            return await Entity.Where(expression).FirstOrDefaultAsync();
         }
 
         public virtual async Task<T> FindById(int id)

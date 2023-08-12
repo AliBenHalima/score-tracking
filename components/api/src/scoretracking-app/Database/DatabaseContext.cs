@@ -57,6 +57,8 @@ namespace ScoreTracking.App.Database
             .WithMany(e => e.Users)
             .UsingEntity<UserGame>();
 
+            modelBuilder.Entity<User>().Property<uint>("Version").IsRowVersion();
+
             modelBuilder.Entity<Game>()
             .HasMany(e => e.Users)
             .WithMany(e => e.Games)

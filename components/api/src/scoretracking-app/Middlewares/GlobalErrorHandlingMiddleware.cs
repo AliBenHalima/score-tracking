@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ScoreTracking.App.Helpers.Exceptions;
 using System;
@@ -35,6 +36,10 @@ namespace ScoreTracking.App.Middlewares
 
                  switch (appError)
                 {
+                    case DbUpdateConcurrencyException ex:
+                        _logger.LogError(appError, appError.Message);
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
                     // Custom Application exception
                     case ScoreTrackingException exception:
                         response.StatusCode = (int)exception.StatusCode;
