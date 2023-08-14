@@ -31,7 +31,7 @@ namespace ScoreTracking.App.Helpers
 
             //DTOs
             CreateMap<Game, CreateGameDTO>();
-            CreateMap<User, RegistredUserDTO>();
+            CreateMap<User, FilterDTO>();
         }
     }
 }

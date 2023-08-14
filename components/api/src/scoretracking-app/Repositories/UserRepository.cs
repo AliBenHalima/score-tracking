@@ -1,17 +1,15 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Macs;
 using ScoreTracking.App.Database;
+using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.Extensions.Query;
 using ScoreTracking.App.Interfaces.Repositories;
+using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace ScoreTracking.App.Repositories
 {
@@ -19,12 +17,19 @@ namespace ScoreTracking.App.Repositories
     public class UserRepository: BaseRepository<User>, IUserRepository
     {
         protected DbSet<User> test;
-
-        public UserRepository(DatabaseContext databaseContext): base(databaseContext)
+        public UserRepository(DatabaseContext databaseContext) : base(databaseContext)
         {
         }
-        
-      
+
+        public override IQueryable<User> FindAll(FilterDTO filters, CancellationToken cancellationToken)
+        {
+            IQueryable<User> userQuery = Entity;
+            userQuery = userQuery.SearchByTerm(filters.SearchTerm)
+                        .OrderBy(u => u.FirstName)
+                        .ApplySorting(filters.SortColumn, filters.SortOrder);
+            return userQuery;
+        }
+
         public override async Task<User> Create(User user)
         {
             DatabaseContext.Users.Add(user);
@@ -32,7 +37,7 @@ namespace ScoreTracking.App.Repositories
              return user;
         }
         [Benchmark]
-        [Arguments("AliBeHalima69@gmail.com")]
+        [Arguments("AliBeHalima61@gmail.com")]
         public async Task<User?> FindByEmail(string email)
         {
             return await Entity.Where(u => u.Email == email).AsNoTracking().FirstOrDefaultAsync();

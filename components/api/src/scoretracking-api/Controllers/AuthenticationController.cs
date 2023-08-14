@@ -37,8 +37,8 @@ namespace ScoreTracking.API.Controllers
         public async Task<ActionResult<GenericSuccessResponse<User>>> Register(RegisterUserRequest registerUserRequest)
         {
             User user = await _authenticationService.Register(registerUserRequest);
-            RegistredUserDTO userDTO = _mapper.Map<RegistredUserDTO>(user);
-            return Ok(new GenericSuccessResponse<RegistredUserDTO>("Success", userDTO));
+            FilterDTO userDTO = _mapper.Map<FilterDTO>(user);
+            return Ok(new GenericSuccessResponse<FilterDTO>("Success", userDTO));
         }
 
         [EnableRateLimiting("sliding-signin")]

@@ -1,19 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using ScoreTracking.App.Database;
+using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
-using ScoreTracking.App.Repositories;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Services
@@ -22,16 +16,19 @@ namespace ScoreTracking.App.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        public readonly IUriService UriService;
 
-        public UserService(IMapper mapper, IUserRepository userRepository)
+        public UserService(IMapper mapper, IUserRepository userRepository, IUriService uriService)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            UriService = uriService;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public IQueryable<User> GetUsers(FilterDTO filters, CancellationToken cancellationToken)
         {
-            return await _userRepository.FindAll();
+            IQueryable<User> userQuery =  _userRepository.FindAll(filters, cancellationToken);
+            return userQuery;
         }
 
         public async Task<User> GetUser(int id)

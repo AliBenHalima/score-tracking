@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScoreTracking.App.Database;
+using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using ScoreTracking.App.Services;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.Controllers
@@ -22,24 +25,29 @@ namespace ScoreTracking.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        public readonly IUriService UriService;
+        public UserController(IUserService userService, IUriService uriService)
         {
             _userService = userService;
+            UriService = uriService;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        public async Task<ActionResult<GenericSuccessResponse<List<User>>>> GetUsers()
+        public async Task<ActionResult<GenericSuccessResponse<PagedList<User>>>> GetUsers([FromQuery] FilterDTO filters, CancellationToken cancellationToken)
         {
-            IEnumerable<User> users = await this._userService.GetUsers();
-            return Ok(new GenericSuccessResponse<IEnumerable<User>>("Users Fetched", users));
+            string route = Request.Path.Value;
+            var usersQuery = this._userService.GetUsers(filters, cancellationToken);
+            var users =  await PagedList<User>.CreateAsync(usersQuery, UriService, filters.Page, filters.PageSize, route);
+
+            return Ok(new GenericSuccessResponse<PagedList<User>>("Users Fetched", users));
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<GenericSuccessResponse<User>>> GetUser([FromRoute] int id)
         {
+           
             User user = await this._userService.GetUser(id);
             return Ok(new GenericSuccessResponse<User>("User Fetched", user));
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BenchmarkDotNet.Filters;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,5 +25,6 @@ namespace ScoreTracking.App.Models
         public List<Game> Games { get; } = new();
         [JsonIgnore]
         public List<UserGame> UserGames { get; } = new();
+            
     }
 }

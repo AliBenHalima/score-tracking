@@ -56,6 +56,14 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddMailing();
 builder.Services.AddLogging();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IUriService>(options =>
+{
+    var accessor = options.GetRequiredService<IHttpContextAccessor>();
+    var request = accessor?.HttpContext?.Request;
+    var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+    return new UriService(uri);
+});
 
 
 //BenchmarkRunner.Run<TestClass>();

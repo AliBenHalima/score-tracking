@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs;
-using ScoreTracking.App.DTOs.Requests.Rounds;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 

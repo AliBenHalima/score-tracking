@@ -1,17 +1,22 @@
-﻿using ScoreTracking.App.DTOs.Requests.Users;
+﻿using Microsoft.AspNetCore.Mvc;
+using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.DTOs.Requests.Users;
+using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Models;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Interfaces.Services
 {
     public interface IUserService
     {
-        public Task<IEnumerable<User>> GetUsers();
-        public Task<User> GetUser(int id);
-        public Task<User> CreateUser(CreateUserRequest createUserRequest);
-        public Task<User> UpdateUser(int id, UpdateUserRequest updateUserRequest);
-        public Task DeleteUser(int id);
+        IQueryable<User> GetUsers(FilterDTO filters, CancellationToken cancellationToken);
+         Task<User> GetUser(int id);
+         Task<User> CreateUser(CreateUserRequest createUserRequest);
+         Task<User> UpdateUser(int id, UpdateUserRequest updateUserRequest);
+         Task DeleteUser(int id);
         //public Task<IEnumerable<Game>> GetUserGames(int id);
 
     }
