@@ -22,9 +22,9 @@ namespace ScoreTracking.App.Models
         public DateTimeOffset? PasswordChangedAt { get; set; }
         public DateTimeOffset? VerifiedAt { get; set; }
         [JsonIgnore]
-        public List<Game> Games { get; } = new();
+        public List<Game> Games { get; set; } = new();
         [JsonIgnore]
-        public List<UserGame> UserGames { get; } = new();
+        public List<UserGame> UserGames { get; set; } = new();
             
     }
 }

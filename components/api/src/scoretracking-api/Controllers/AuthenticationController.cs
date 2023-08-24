@@ -6,6 +6,7 @@ using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
 using ScoreTracking.App.Helpers;
+using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using ScoreTracking.Extensions.Email.Contratcs;
@@ -21,15 +22,16 @@ namespace ScoreTracking.API.Controllers
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IEmailService _emailService;
-
+        private readonly IApplicationHelper _applicationHelper;
         private readonly IMapper _mapper;
 
-        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService, IApplicationHelper applicationHelper)
         {
             _userService = userService;
             _authenticationService = authenticationService;
             _mapper = mapper;
             _emailService = emailService;
+            _applicationHelper = applicationHelper;
         }
 
         [HttpPost]
@@ -61,13 +63,21 @@ namespace ScoreTracking.API.Controllers
 
             var emailMessage = new EmailMessage
             {
-                Id = GlobalHelper.generateRandom(),
+                Id = _applicationHelper.generateRandom(1000, 9999),
                 ReceiverName = email.ReceiverName,
                 ReceiverAddress = email.ReceiverAddress,
                 Content = emailTemplateText,
                 Subject = email.EmailSubject
             };
             await _emailService.SendAsync(emailMessage);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("job")]
+        public async Task<ActionResult> TestQuartz()
+        {
+            await _userService.TestQuartz();
             return Ok();
         }
     

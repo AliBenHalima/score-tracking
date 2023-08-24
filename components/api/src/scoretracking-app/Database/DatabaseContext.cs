@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using ScoreTracking.App.Models;
 
 
@@ -21,10 +22,17 @@ namespace ScoreTracking.App.Database
         {
             _configuration = configuration;
         }
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL"));
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseNpgsql(_configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention();
+
+            }
         }
 
 

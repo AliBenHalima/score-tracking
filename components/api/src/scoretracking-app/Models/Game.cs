@@ -24,7 +24,7 @@ namespace ScoreTracking.App.Models
         public bool HasJokerPenalty { get; set; }
         public int JokerPenaltyValue { get; set; }
         [JsonIgnore]
-        public List<User> Users { get; } = new();
+        public List<User> Users { get; set; } = new();
         [JsonIgnore]
         public List<UserGame> UserGames { get; set; } = new();
     }

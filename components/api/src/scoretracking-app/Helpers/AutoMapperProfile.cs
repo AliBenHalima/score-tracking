@@ -6,11 +6,7 @@ using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.DTOs.Users;
 using ScoreTracking.App.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace ScoreTracking.App.Helpers
 {
@@ -24,7 +20,7 @@ namespace ScoreTracking.App.Helpers
             CreateMap<CreateGameRequest, Game>()
             .ForMember(
                 dest => dest.Code,
-                opt => opt.MapFrom(src => GlobalHelper.generateRandom(1000,9999))
+                opt => opt.MapFrom(src => generateRandom(1000, 9999))
             );
 
             CreateMap<RegisterUserRequest, User>();
@@ -32,6 +28,12 @@ namespace ScoreTracking.App.Helpers
             //DTOs
             CreateMap<Game, CreateGameDTO>();
             CreateMap<User, FilterDTO>();
+           
+        }
+        private string generateRandom(int min = 1000, int max = 9999)
+        {
+            Random random = new Random();
+            return random.Next(min, max).ToString();
         }
     }
 }

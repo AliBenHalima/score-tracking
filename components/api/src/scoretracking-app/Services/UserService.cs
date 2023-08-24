@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Quartz;
+using Quartz.Impl;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
-using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
+using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
+using ScoreTracking.App.Jobs;
 using ScoreTracking.App.Models;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,13 +21,14 @@ namespace ScoreTracking.App.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public readonly IUriService UriService;
-
-        public UserService(IMapper mapper, IUserRepository userRepository, IUriService uriService)
+        public readonly ILogger<UserService> _logger;
+        public readonly IApplicationHelper _helper;
+        public UserService(IMapper mapper, IUserRepository userRepository, ILogger<UserService> logger, IApplicationHelper helper)
         {
             _mapper = mapper;
             _userRepository = userRepository;
-            UriService = uriService;
+            _logger = logger;
+            _helper = helper;
         }
 
         public IQueryable<User> GetUsers(FilterDTO filters, CancellationToken cancellationToken)
@@ -59,12 +65,15 @@ namespace ScoreTracking.App.Services
             if (userById is null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(User).Name);
 
             User? userByEmail = await _userRepository.FindByEmail(updateUserRequest.Email);
-            if (userByEmail is not null && !GlobalHelper.AreIntegersEqual(userByEmail.Id, id)) throw new BadRequestException("Email already exists");
+            if (userByEmail is not null && !_helper.AreIntegersEqual(userByEmail.Id, id)) 
+                throw new BadRequestException("Email already exists");
 
             User? userByPhone = await _userRepository.FindByPhone(updateUserRequest.Phone);
-            if (userByPhone is not null && !GlobalHelper.AreIntegersEqual(userByPhone.Id, id)) throw new BadRequestException("Phone number already exists");
+            if (userByPhone is not null && !_helper.AreIntegersEqual(userByPhone.Id, id)) throw new BadRequestException("Phone number already exists");
 
-            return await _userRepository.Update(userById);
+            User user = _mapper.Map<User>(updateUserRequest);
+
+            return await _userRepository.Update(user);
         }
 
         public async Task DeleteUser(int id)
@@ -74,6 +83,28 @@ namespace ScoreTracking.App.Services
             if (user is null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(User).Name);
 
              await _userRepository.Delete(user);
+        }
+
+        public async Task TestQuartz()
+        {
+            var schedulerFactory = new StdSchedulerFactory();
+            var scheduler = await schedulerFactory.GetScheduler();
+
+            IJobDetail job = JobBuilder.Create<TestJob>()
+            .WithIdentity("myJob", "group1")
+            .Build();
+
+            // Trigger the job to run now, and then every 40 seconds
+            ITrigger trigger = TriggerBuilder.Create()
+              .WithIdentity("myTrigger", "group1")
+              .StartNow()
+              .WithSimpleSchedule(x => x
+               .WithIntervalInSeconds(40)
+               .RepeatForever())
+              .Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+            await scheduler.Start();
         }
     }
 }

@@ -7,7 +7,9 @@ using ScoreTracking.App.Extensions.Query;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +18,6 @@ namespace ScoreTracking.App.Repositories
     [SimpleJob(RuntimeMoniker.Net70)]
     public class UserRepository: BaseRepository<User>, IUserRepository
     {
-        protected DbSet<User> test;
         public UserRepository(DatabaseContext databaseContext) : base(databaseContext)
         {
         }
@@ -36,12 +37,14 @@ namespace ScoreTracking.App.Repositories
             await DatabaseContext.SaveChangesAsync();
              return user;
         }
+
         [Benchmark]
         [Arguments("AliBeHalima61@gmail.com")]
         public async Task<User?> FindByEmail(string email)
         {
             return await Entity.Where(u => u.Email == email).AsNoTracking().FirstOrDefaultAsync();
         }
+
         [Benchmark]
         [Arguments("+216540142572")]
 

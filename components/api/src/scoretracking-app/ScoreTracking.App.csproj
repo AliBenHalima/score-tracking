@@ -30,14 +30,37 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+    <PackageReference Include="Quartz" Version="3.7.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.7.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.7.0.75501">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers\Wrapper\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Ali Ben Halima\Desktop\score-tracking\components\api\src\scoretracking-app\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Ali Ben Halima\Desktop\score-tracking\components\api\src\scoretracking-app\.editorconfig" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <AssemblyAttribute Include="System.RunTime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>ScoreTracking.UnitTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>-->
+  
 <!-- <ItemGroup>
     <ProjectReference Include="..\scoretracking-api\ScoreTracking.Api.csproj" />
   </ItemGroup> -->

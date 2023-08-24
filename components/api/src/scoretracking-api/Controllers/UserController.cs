@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
@@ -26,13 +27,15 @@ namespace ScoreTracking.Controllers
     {
         private readonly IUserService _userService;
         public readonly IUriService UriService;
-        public UserController(IUserService userService, IUriService uriService)
+        public readonly ILogger<UserController> _logger;
+        public UserController(IUserService userService, IUriService uriService, ILogger<UserController> logger)
         {
             _userService = userService;
             UriService = uriService;
+            _logger = logger;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<GenericSuccessResponse<PagedList<User>>>> GetUsers([FromQuery] FilterDTO filters, CancellationToken cancellationToken)
         {

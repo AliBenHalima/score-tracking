@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using ScoreTracking.App.Services;
 using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using ScoreTracking.App.Database;
 using Microsoft.Extensions.Configuration;
 using ScoreTracking.App.Repositories;
@@ -11,9 +10,6 @@ using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Middlewares;
 using FluentValidation.AspNetCore;
-using System.Reflection;
-using FluentValidation;
-using ScoreTracking.App.DTOs.Requests;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ScoreTracking.App.Options.OptionSetup;
@@ -23,15 +19,17 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.RateLimiting;
 using ScoreTracking.Extensions.Email;
-using BenchmarkDotNet.Running;
-using ScoreTracking.API.Controllers;
-using ScoreTracking.API;
-using ScoreTracking.App;
-using ScoreTracking.Extensions.Email.Infrastructure;
+using Serilog;
+using ScoreTracking.App.Interfaces.Helpers;
+using ScoreTracking.App.Helpers;
+using Microsoft.Extensions.Hosting;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
+//builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
+builder.Services.AddDbContext<DatabaseContext>();
+
 builder.Services.AddAutoMapper(typeof(IModuleMarker).Assembly);
 builder.Services.AddControllers().AddFluentValidation(x =>
 {
@@ -53,8 +51,12 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddScoped<IApplicationHelper, GlobalHelper>();
+
 builder.Services.AddMailing();
 builder.Services.AddLogging();
+
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUriService>(options =>
@@ -65,11 +67,22 @@ builder.Services.AddSingleton<IUriService>(options =>
     return new UriService(uri);
 });
 
+Host.CreateDefaultBuilder()
+    .ConfigureServices((cxt, services) =>
+    {
+        services.AddQuartz(q =>
+        {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+        });
+        services.AddQuartzHostedService(opt =>
+        {
+            opt.WaitForJobsToComplete = true;
+        });
+    }).Build();
 
 //BenchmarkRunner.Run<TestClass>();
 
 //Hosted Services
-
 
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
@@ -85,6 +98,8 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
             }) 
         ); 
     });
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -135,7 +150,8 @@ builder.Services.ConfigureOptions<MailSettingsSetup>();
 
 
 var app = builder.Build();
- 
+
+app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -149,6 +165,8 @@ app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
 
-app.MapGet("/", () => "Hello World! from main server");
+//app.MapGet("/", () => "Hello World! from main server");
 
 await app.RunAsync();
+
+public partial class Program { }
