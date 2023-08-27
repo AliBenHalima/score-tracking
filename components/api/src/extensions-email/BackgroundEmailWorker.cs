@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Polly;
+using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.Extensions.Email.Contracts;
 using ScoreTracking.Extensions.Email.Contratcs;
 
@@ -9,10 +10,10 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
     public class BackgroundEmailWorker : BackgroundService
     {
         private readonly IEmailQueue _emailQueue;
-        private readonly IEmailSender _emailSender;
+        private readonly IEnumerable<IEmailSender> _emailSender;
         private readonly ILogger<BackgroundEmailWorker> _logger;
 
-        public BackgroundEmailWorker(IEmailQueue emailQueue, ILogger<BackgroundEmailWorker> logger, IEmailSender emailSender)
+        public BackgroundEmailWorker(IEmailQueue emailQueue, ILogger<BackgroundEmailWorker> logger, IEnumerable<IEmailSender> emailSender)
         {
             _emailQueue = emailQueue;
             _logger = logger;
@@ -44,16 +45,21 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
                                      return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
                                  });
 
-
                             var circuitBreaker = Policy.Handle<Exception>()
-                                .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, TimeSpan.FromSeconds(30), (ex, timespan) => OnBreak(ex, timespan), OnReset());
+                                .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 3, TimeSpan.FromSeconds(30), (ex, timespan) => OnBreak(ex, timespan), OnReset());
 
-                            var policy = retryPolicy.WrapAsync(circuitBreaker);
 
-                            await policy.ExecuteAsync(async () =>
+                            var fallbackPolicy = Policy.Handle<Exception>()
+                                     .FallbackAsync(async (cancellationToken) =>
+                                       await _emailSender.First().Send(email, stoppingToken)
+                                    );
+
+                            //var policy = Policy.WrapAsync(retryPolicy, fallbackPolicy);
+
+                            await fallbackPolicy.WrapAsync(retryPolicy).WrapAsync(circuitBreaker).ExecuteAsync(async () =>
                             {
                                 _logger.LogInformation("Executig policy...");
-                                await _emailSender.Send(email, stoppingToken);
+                                await _emailSender.First().Send(email, stoppingToken);
                                 _logger.LogInformation("Email set successfully");
                                 await _emailQueue.MarkEmailQueueAsSucceededAsync(email.Id);
                             });
@@ -85,6 +91,7 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
         private void OnBreak(Exception exception, TimeSpan timespan)
         {
             _logger.LogWarning("Circuit has been broken after {timespan}", timespan);
+
         }
         private Action OnReset()
         {

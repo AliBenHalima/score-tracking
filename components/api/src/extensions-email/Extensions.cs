@@ -26,10 +26,11 @@ namespace ScoreTracking.Extensions.Email
                 return options;
             });
 
-       
+
             services.AddSingleton<IEmailQueue, DatabaseEmailQueue>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddSingleton<IEmailSender, MailTrapSender>();
+            services.AddSingleton<IEmailSender, FakeEmailSender>();
             services.AddHostedService<BackgroundEmailWorker>();
             services.AddAutoMapper(typeof(IModuleMarker).Assembly);
             services.AddSingleton<InitializeDatabase>();
