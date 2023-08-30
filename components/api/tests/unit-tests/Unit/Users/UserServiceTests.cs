@@ -86,19 +86,17 @@ namespace ScoreTracking.UnitTests.Unit.Users
         {
             // Arrange
             string email = "a@gmailcom";
-            var testUser = new Faker<User>()
+            var user = new Faker<User>()
                 .RuleFor(u => u.FirstName, (f, u) => f.Name.FirstName())
                 .RuleFor(u => u.LastName, (f, u) => f.Name.LastName())
                 .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
-               .RuleFor(u => u.Phone, (f, u) => f.Phone.PhoneNumber());
-            var testCreateUserRequest = new Faker<CreateUserRequest>()
+               .RuleFor(u => u.Phone, (f, u) => f.Phone.PhoneNumber()).Generate();
+
+            var createUserRequest = new Faker<CreateUserRequest>()
                .RuleFor(u => u.FirstName, (f, u) => f.Name.FirstName())
                .RuleFor(u => u.LastName, (f, u) => f.Name.LastName())
                .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
-               .RuleFor(u => u.Phone, (f, u) => f.Phone.PhoneNumber());
-
-            var user = testUser.Generate();
-            var createUserRequest = testCreateUserRequest.Generate();
+               .RuleFor(u => u.Phone, (f, u) => f.Phone.PhoneNumber()).Generate();
 
             // Act
 
@@ -227,8 +225,6 @@ namespace ScoreTracking.UnitTests.Unit.Users
 
             // Assert
             _userRepositoryMock.Verify(ur => ur.Delete(user), Times.Once);
-
-
 
         }
 

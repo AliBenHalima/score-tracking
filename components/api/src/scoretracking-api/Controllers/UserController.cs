@@ -10,12 +10,6 @@ using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
-using ScoreTracking.App.Services;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 

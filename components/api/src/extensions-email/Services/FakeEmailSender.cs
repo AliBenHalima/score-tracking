@@ -21,7 +21,7 @@ namespace ScoreTracking.Extensions.Email.Services
 
         public Task Send(EmailMessage message, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Sending email to {TO}", message.ReceiverAddress);
+            _logger.LogInformation("Sending email to Fake {TO}", message.ReceiverAddress);
             return Task.CompletedTask;
         }
     }

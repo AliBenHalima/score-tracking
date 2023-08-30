@@ -19,7 +19,6 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.RateLimiting;
 using ScoreTracking.Extensions.Email;
-using Serilog;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Helpers;
 using Microsoft.Extensions.Hosting;
@@ -27,8 +26,8 @@ using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
-builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
+//builder.Services.AddDbContext<DatabaseContext>();
 
 builder.Services.AddAutoMapper(typeof(IModuleMarker).Assembly);
 builder.Services.AddControllers().AddFluentValidation(x =>
@@ -52,6 +51,7 @@ builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IApplicationHelper, GlobalHelper>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddMailing();
 builder.Services.AddLogging();
@@ -98,7 +98,7 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
             }) 
         ); 
     });
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+//builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 
 builder.Services.AddSwaggerGen(options =>
@@ -151,7 +151,7 @@ builder.Services.ConfigureOptions<MailSettingsSetup>();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+//app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {

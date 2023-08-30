@@ -45,9 +45,9 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
                                      return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
                                  });
 
-                            var circuitBreaker = Policy.Handle<Exception>()
-                                .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 3, TimeSpan.FromSeconds(30), (ex, timespan) => OnBreak(ex, timespan), OnReset());
 
+                            var circuitBreaker = Policy.Handle<Exception>()
+                                .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, TimeSpan.FromSeconds(30), (ex, timespan) => OnBreak(ex, timespan), OnReset());
 
                             var fallbackPolicy = Policy.Handle<Exception>()
                                      .FallbackAsync(async (cancellationToken) =>
@@ -91,7 +91,7 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
         private void OnBreak(Exception exception, TimeSpan timespan)
         {
             _logger.LogWarning("Circuit has been broken after {timespan}", timespan);
-
+           
         }
         private Action OnReset()
         {

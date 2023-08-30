@@ -39,7 +39,6 @@ namespace ScoreTracking.App.Services
 
         public async Task<User> GetUser(int id)
         {
-
             User? user = await _userRepository.FindByCondition(u => u.Id == id);
 
             if(user == null) throw new RessourceNotFoundException("{0} Doesn't exist.", typeof(User).Name);
