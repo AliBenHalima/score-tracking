@@ -1,19 +1,19 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using Bogus;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
-using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using ScoreTracking.App.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -29,13 +29,13 @@ namespace ScoreTracking.UnitTests.Unit.Users
         private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>(MockBehavior.Strict);
         private readonly Mock<ILogger<UserService>> _loggerMock = new Mock<ILogger<UserService>>();
         private readonly Mock<IApplicationHelper> _globalHelperMock = new Mock<IApplicationHelper>();
+        private readonly Mock<IUnitOfWork> _unitOfWork = new Mock<IUnitOfWork>(MockBehavior.Strict);
 
 
         public UserServiceTests()
         {
-            _userService = new UserService(_mapperMock.Object, _userRepositoryMock.Object, _loggerMock.Object, _globalHelperMock.Object);
+            _userService = new UserService(_unitOfWork.Object, _mapperMock.Object, _userRepositoryMock.Object, _loggerMock.Object, _globalHelperMock.Object);
         }
-
         [Fact]
         public void GetUsers_Should_Return_List_Of_Users()
         {
@@ -113,10 +113,12 @@ namespace ScoreTracking.UnitTests.Unit.Users
             _userRepositoryMock.Setup(x => x.FindByEmail(It.Is<string>(email => email == createUserRequest.Email))).ReturnsAsync(() => null);
             _userRepositoryMock.Setup(x => x.FindByPhone(It.Is<string>(phone => phone == createUserRequest.Phone))).ReturnsAsync(() => null);
             _userRepositoryMock.Setup(x => x.Create(It.IsAny<User>())).ReturnsAsync(user);
+            _unitOfWork.Setup(x => x.SaveChangesAsync()).Returns(Task.CompletedTask);
+
 
             User newUser = await _userService.CreateUser(createUserRequest);
             // Assert
-            Assert.Equal(user.FirstName, newUser.FirstName);
+            Assert.Equal(createUserRequest.FirstName, newUser.FirstName);
         }
 
         [Fact]
@@ -174,7 +176,17 @@ namespace ScoreTracking.UnitTests.Unit.Users
             _userRepositoryMock.Setup(x => x.FindByCondition(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(user);
             _userRepositoryMock.Setup(x => x.FindByEmail(It.Is<string>(email => email == request.Email))).ReturnsAsync(() => null);
             _userRepositoryMock.Setup(x => x.FindByPhone(It.Is<string>(phone => phone == request.Phone))).ReturnsAsync(() => null);
+            _mapperMock.Setup(x => x.Map<User>(It.IsAny<UpdateUserRequest>())).Returns((UpdateUserRequest request) => new User
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                Phone = request.Phone,
+            });
+
             _userRepositoryMock.Setup(x => x.Update(It.Is<User>(u => u.FirstName == user.FirstName))).ReturnsAsync(user);
+            _unitOfWork.Setup(x => x.SaveChangesAsync()).Returns(Task.CompletedTask);
+
             var result = await _userService.UpdateUser(user.Id, request);
             // Assert
             Assert.Equal(result.Id, user.Id);
@@ -220,6 +232,7 @@ namespace ScoreTracking.UnitTests.Unit.Users
             // Act
              _userRepositoryMock.Setup(u => u.FindByCondition(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(user);
              _userRepositoryMock.Setup(u => u.Delete(It.IsAny<User>())).Returns(Task.CompletedTask);
+             _unitOfWork.Setup(x => x.SaveChangesAsync()).Returns(Task.CompletedTask);
 
             await _userService.DeleteUser(user.Id);
 

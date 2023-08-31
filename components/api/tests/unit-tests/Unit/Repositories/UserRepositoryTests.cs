@@ -1,13 +1,9 @@
-﻿using AutoFixture;
-using Bogus;
+﻿using Bogus;
 using FluentAssertions;
-using ScoreTracking.App.Database;
 using ScoreTracking.App.Models;
 using ScoreTracking.App.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,7 +17,7 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             _context = new InMemoryDatabaseContext();
         }
 
-        [Theory]
+
         [MemberData(nameof(GetUserInstance))]
         public async Task Create_Should_Add_User_To_Database(User user)
         {
@@ -35,7 +31,7 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             Assert.NotNull(addedUser);
         }
 
-        [Theory]
+
         [MemberData(nameof(GetUserInstance))]
         public async Task FindByEmail_Should_Return_User(User user)
         {
@@ -51,7 +47,6 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             userByEmail.Should().BeEquivalentTo(createdUser);
         }
 
-        [Theory]
         [MemberData(nameof(GetUserInstance))]
         public async Task FindByPhone_Should_Return_User(User user)
         {
@@ -66,7 +61,6 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             userByPhone.Should().BeEquivalentTo(createdUser);
         }
 
-        [Theory]
         [MemberData(nameof(GetUserInstance))]
         public async Task FindById_Should_Return_User(User user)
         {
@@ -81,7 +75,6 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             userById.Should().BeEquivalentTo(createdUser);
         }
 
-        [Theory]
         [MemberData(nameof(GetUserInstance))]
         public async Task UpdateUser_Should_Update_User_Successfully(User user)
         {

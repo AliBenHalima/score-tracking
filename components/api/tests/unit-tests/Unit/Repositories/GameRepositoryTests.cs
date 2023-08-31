@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using ScoreTracking.App.Database;
 using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
@@ -37,7 +36,6 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             // Act
             context.Users.Add(user);
             context.Games.AddRange(games);
-            await context.SaveChangesAsync();
             foreach (var game in games)
             {
                 user.Games.Add(game);
@@ -45,7 +43,6 @@ namespace ScoreTracking.UnitTests.Unit.Repositories
             await context.SaveChangesAsync();
             // Assert
             var dbUser = await context.Users.FindAsync(user.Id);
-            //dbUser.Games.All(x => games.Contains(x));
             dbUser.Games.Should().NotBeNull();
             dbUser.Games.Should().Contain(game => games.Contains(game));
         }

@@ -5,11 +5,9 @@ using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.Extensions.Query;
 using ScoreTracking.App.Interfaces.Repositories;
-using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,11 +29,10 @@ namespace ScoreTracking.App.Repositories
             return userQuery;
         }
 
-        public override async Task<User> Create(User user)
+        public override Task<User> Create(User user)
         {
             DatabaseContext.Users.Add(user);
-            await DatabaseContext.SaveChangesAsync();
-             return user;
+             return Task.FromResult(user);
         }
 
         [Benchmark]

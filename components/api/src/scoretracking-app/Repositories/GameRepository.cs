@@ -56,7 +56,7 @@ namespace ScoreTracking.App.Repositories
                 {
                     UserId = s.Key,
                     Sum = s.Sum(ugr => ugr.Score)
-                }).ToList()                
+                }).ToList()
             })
             .FirstOrDefault();
 
@@ -71,13 +71,13 @@ namespace ScoreTracking.App.Repositories
             return game;
         }
 
-        public async Task AddPlayersToGame(Game game, IEnumerable<User> users)
+        public Task AddPlayersToGame(Game game, IEnumerable<User> users)
         {
             foreach (User user in users)
             {
                 game.Users.Add(user);
             }
-            await DatabaseContext.SaveChangesAsync();
+           return Task.CompletedTask;
         }
         public async Task<Game> GetGameWithPlayers(int gameId)
         {
@@ -94,21 +94,21 @@ namespace ScoreTracking.App.Repositories
                 .ToListAsync();
         }
 
-        public async Task StartGame(Game game)
+        public Task StartGame(Game game)
         {
             game.StartedAt = DateTime.UtcNow;
-            await DatabaseContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
-        public async Task EndGame(Game game)
+        public Task EndGame(Game game)
         {
             game.EndedAt = DateTime.UtcNow;
             game.EndingType = GameEndingType.Default;
-            await DatabaseContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
-        public async Task CancelGame(Game game)
+        public Task CancelGame(Game game)
         {
             game.CanceledAt = DateTime.UtcNow;
-            await DatabaseContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task<Round?> GetGameLatestRound(int gameId)

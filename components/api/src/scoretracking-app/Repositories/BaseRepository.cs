@@ -48,24 +48,22 @@ namespace ScoreTracking.App.Repositories
             return await Entity.Where(u => ids.Any(x => x == u.Id)).ToListAsync();
         }
 
-        public virtual async Task<T> Create(T entity)
+        public virtual Task<T> Create(T entity)
         {
             Entity.Add(entity);
-            await DatabaseContext.SaveChangesAsync();
-            return entity;
+            return Task.FromResult(entity);
         }
 
-        public virtual async Task<T> Update(T entity)
+        public virtual Task<T> Update(T entity)
         {
             Entity.Update(entity);
-            await DatabaseContext.SaveChangesAsync();
-            return entity;
+            return Task.FromResult(entity);
         }
 
-        public virtual async Task Delete(T entity)
+        public virtual Task Delete(T entity)
         {
             Entity.Remove(entity);
-            await DatabaseContext.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

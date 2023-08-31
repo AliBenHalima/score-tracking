@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs;
 using ScoreTracking.App.DTOs.Requests.Games;
@@ -44,7 +43,6 @@ namespace ScoreTracking.App.Services
         public async Task<CreateGameDTO> CreateGame(CreateGameRequest createGameRequest)
         {
             using var transaction = _unitOfWork.BeginTransaction();
-
             try
             {
                 Game game = _mapper.Map<Game>(createGameRequest);
@@ -89,6 +87,8 @@ namespace ScoreTracking.App.Services
             VerifyPlayersAreNotGameMembers(players, game.UserGames);
             if (IsGameStarted(game) && IsGameCanceled(game)) throw new BadRequestException("Can't create game, verify game status");
             await _gameRepository.AddPlayersToGame(game, players);
+            await _unitOfWork.SaveChangesAsync();
+
         }
         public async Task<GameDetailsDTO> GetGame(int id)
         {
@@ -102,6 +102,8 @@ namespace ScoreTracking.App.Services
 
             if (IsGameStarted(game)) throw new BadRequestException($"Game already started at {game.StartedAt}");
             await _gameRepository.StartGame(game);
+            await _unitOfWork.SaveChangesAsync();
+
         }
 
         public async Task UpdateGameStatus(int id, GameStatus gameStatus)
@@ -120,6 +122,8 @@ namespace ScoreTracking.App.Services
                 if (IsGameCanceled(game)) throw new BadRequestException($"Game already canceled at {game.CanceledAt}");
                 await _gameRepository.CancelGame(game);
             }
+            await _unitOfWork.SaveChangesAsync();
+
         }
 
         //Rounds
@@ -156,6 +160,7 @@ namespace ScoreTracking.App.Services
                     bool GameHasPlayers = await GameHasPlayersLeft(game);
                     if (!GameHasPlayers) await _gameRepository.EndGame(game);
                     transaction.Commit();
+                    await _unitOfWork.SaveChangesAsync();
 
                 }
                 catch (ScoreTrackingException exception)
@@ -171,11 +176,11 @@ namespace ScoreTracking.App.Services
             }
         }
 
-        private async Task<bool> GameHasPlayersLeft(Game game)
+        public async Task<bool> GameHasPlayersLeft(Game game)
         {
             IEnumerable<RoundSumDTO> roundSum = await _roundRepository.GetRoundSumScoresByPlayer(game.Id);
             int filteredRoundCount = roundSum.Where(r => r.Sum <= game.Score).ToList().Count(); // players with scoe <= max game score.
-            return (filteredRoundCount >= Constants.GameConstants.MaxPlayersCount) ? true : false; // check if players left is > 3 
+            return (filteredRoundCount >= Constants.GameConstants.MaxPlayersCount) ? true : false; // check if players left is > 3
 
         }
 

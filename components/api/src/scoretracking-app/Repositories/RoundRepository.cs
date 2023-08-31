@@ -19,24 +19,22 @@ namespace ScoreTracking.App.Repositories
             return await Entity.Where(r => r.Id == id).Include(r => r.UserGameRounds).ThenInclude(r => r.UserGame).FirstOrDefaultAsync();
         }
 
-        public override async Task<Round> Create(Round round)
+        public override Task<Round> Create(Round round)
         {
             Entity.Add(round);
-            await DatabaseContext.SaveChangesAsync();
-            return round;
+            return Task.FromResult(round);
         }
-        public async Task<Round> AddRoundScores(Round round, List<UserGameRound> userGameRounds)
+        public Task<Round> AddRoundScores(Round round, List<UserGameRound> userGameRounds)
         {
 
             foreach(UserGameRound userGameRound in userGameRounds)
             {
                      round.UserGameRounds.Add(userGameRound);
             }
-             await DatabaseContext.SaveChangesAsync();
-            return round;
+            return Task.FromResult(round);
         }
 
-        public async Task<Round> updateRoundScore(Game game, Round round, IEnumerable<RoundInformationDTO> roundInformation)
+        public Task<Round> updateRoundScore(Game game, Round round, IEnumerable<RoundInformationDTO> roundInformation)
         {
             foreach (UserGameRound userGameRound in round.UserGameRounds)
             {
@@ -44,8 +42,7 @@ namespace ScoreTracking.App.Repositories
                 userGameRound.Jokers = filteredRound.JokerCount;
                 userGameRound.Score = (filteredRound.Score + CalculateJokerAdditionalScore(game, filteredRound.JokerCount));
             }
-            await DatabaseContext.SaveChangesAsync();
-            return round;
+            return Task.FromResult(round);
         }
 
         private RoundInformationDTO FilterRoundInformation(IEnumerable<RoundInformationDTO> roundInformation, int userId)
@@ -78,5 +75,5 @@ namespace ScoreTracking.App.Repositories
         }
     }
 
-   
+
 }
