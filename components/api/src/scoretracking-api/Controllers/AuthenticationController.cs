@@ -49,7 +49,6 @@ namespace ScoreTracking.API.Controllers
         public async Task<ActionResult<GenericSuccessResponse<string>>> Signin(SigninUserRequest signinUserRequest)
         {
             string token = await _authenticationService.Signin(signinUserRequest);
-            
             return Ok(new GenericSuccessResponse<string>("Success", token));
         }
 
@@ -80,6 +79,5 @@ namespace ScoreTracking.API.Controllers
             await _userService.TestQuartz();
             return Ok();
         }
-    
     }
 }

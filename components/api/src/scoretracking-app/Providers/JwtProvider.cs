@@ -44,7 +44,7 @@ namespace ScoreTracking.App.Providers
                 signingCredentials
                 );
 
-            string tokenValue = new JwtSecurityTokenHandler().WriteToken(token); 
+            string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
             return tokenValue;
         }
     }
