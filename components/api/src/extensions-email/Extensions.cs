@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ScoreTracking.App.BackgroundJobs.Jobs;
 using ScoreTracking.Extensions.Email.Contracts;
 using ScoreTracking.Extensions.Email.Contratcs;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Quartz;
 
 namespace ScoreTracking.Extensions.Email
 {
@@ -28,7 +30,7 @@ namespace ScoreTracking.Extensions.Email
 
 
             services.AddSingleton<IEmailQueue, DatabaseEmailQueue>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddTransient<IEmailService, QuartzEmailService>();
             services.AddSingleton<IEmailSender, MailTrapSender>();
             services.AddSingleton<IEmailSender, FakeEmailSender>();
             services.AddHostedService<BackgroundEmailWorker>();
@@ -36,6 +38,7 @@ namespace ScoreTracking.Extensions.Email
             services.AddSingleton<InitializeDatabase>();
             services.ConfigureOptions<DatabaseOptionSetup>();
             services.AddSingleton<IEmailRepository, PgEmailRepository>();
+
             return services;
         }
     }

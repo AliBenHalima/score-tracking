@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Polly;
-using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.Extensions.Email.Contracts;
 using ScoreTracking.Extensions.Email.Contratcs;
 
@@ -91,7 +90,7 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
         private void OnBreak(Exception exception, TimeSpan timespan)
         {
             _logger.LogWarning("Circuit has been broken after {timespan}", timespan);
-           
+
         }
         private Action OnReset()
         {

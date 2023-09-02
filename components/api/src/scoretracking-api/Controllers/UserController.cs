@@ -29,7 +29,7 @@ namespace ScoreTracking.Controllers
             _logger = logger;
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<ActionResult<GenericSuccessResponse<PagedList<User>>>> GetUsers([FromQuery] FilterDTO filters, CancellationToken cancellationToken)
         {
@@ -44,17 +44,16 @@ namespace ScoreTracking.Controllers
         [Route("{id}")]
         public async Task<ActionResult<GenericSuccessResponse<User>>> GetUser([FromRoute] int id)
         {
-           
+
             User user = await this._userService.GetUser(id);
             return Ok(new GenericSuccessResponse<User>("User Fetched", user));
         }
-
         [HttpPost]
         public async Task<ActionResult<GenericSuccessResponse<User>>> CreateUser(CreateUserRequest createUserRequest)
         {
            var user = await this._userService.CreateUser(createUserRequest);
             return Ok(new GenericSuccessResponse<User>("User Created", user));
-        }
+       }
 
         [HttpPut]
         [Route("{id}")]
@@ -65,12 +64,12 @@ namespace ScoreTracking.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<SuccessResponse>> DeleteUser(int id) 
+        public async Task<ActionResult<SuccessResponse>> DeleteUser(int id)
         {
             await this._userService.DeleteUser(id);
             // can't remove generic type in case of absence of data. (to review)
             // Probably creating a new class to handle this use case (without generic type)
-            return Ok(new SuccessResponse("User Deleted")); 
+            return Ok(new SuccessResponse("User Deleted"));
         }
 
     }

@@ -21,11 +21,10 @@ using System.Threading.RateLimiting;
 using ScoreTracking.Extensions.Email;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Helpers;
-using Microsoft.Extensions.Hosting;
 using Quartz;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
 //builder.Services.AddDbContext<DatabaseContext>();
 
@@ -67,18 +66,28 @@ builder.Services.AddSingleton<IUriService>(options =>
     return new UriService(uri);
 });
 
-Host.CreateDefaultBuilder()
-    .ConfigureServices((cxt, services) =>
-    {
-        services.AddQuartz(q =>
-        {
-            q.UseMicrosoftDependencyInjectionJobFactory();
-        });
-        services.AddQuartzHostedService(opt =>
-        {
-            opt.WaitForJobsToComplete = true;
-        });
-    }).Build();
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+});
+
+builder.Services.AddQuartzHostedService(opt =>
+{
+opt.WaitForJobsToComplete = true;
+});
+
+//Host.CreateDefaultBuilder()
+//    .ConfigureServices((cxt, services) =>
+//    {
+//        services.AddQuartz(q =>
+//        {
+//            q.UseMicrosoftDependencyInjectionJobFactory();
+//        });
+//        services.AddQuartzHostedService(opt =>
+//        {
+//            opt.WaitForJobsToComplete = true;
+//        });
+//    }).Build();
 
 //BenchmarkRunner.Run<TestClass>();
 
@@ -95,9 +104,9 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
                 Window = TimeSpan.FromSeconds(60),
                 SegmentsPerWindow = 10
 
-            }) 
-        ); 
-    });
+            })
+        );
+});
 //builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 
@@ -165,8 +174,6 @@ app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
 
-//app.MapGet("/", () => "Hello World! from main server");
-
-await app.RunAsync();
+app.Run();
 
 public partial class Program { }

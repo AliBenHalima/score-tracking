@@ -1,7 +1,11 @@
 ﻿
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using ScoreTracking.App.Database;
+using ScoreTracking.App.Models;
+using ScoreTracking.IntegrationTests.Seeders.Seeders;
+using System.ComponentModel;
 using System.Data.Common;
 
 
@@ -10,6 +14,7 @@ namespace ScoreTracking.Integ.Tests
     public class CustomWebApplicationFactory<TProgram>
     : WebApplicationFactory<TProgram> where TProgram : class
     {
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -24,23 +29,15 @@ namespace ScoreTracking.Integ.Tests
                 {
                     options.UseInMemoryDatabase(databaseName: "InMemoryDB");
                 });
-
-                var sp = services.BuildServiceProvider();
-                using (var scope = sp.CreateScope())
-                using (var appContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>())
-                {
-                    try
-                    {
-                        appContext.Database.EnsureCreated();
-                    }
-                    catch (Exception ex)
-                    {
-                        //Log errors or do anything you think it's needed
-                        throw;
-                    }
-                }
             });
 
         }
+        public void SeedDatabase()
+        {
+            DatabaseSeeder.Seed(Services);
+        }
+
+
     }
+
 }

@@ -13,7 +13,7 @@ using ScoreTracking.Extensions.Email.Contratcs;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ScoreTracking.API.Controllers
+namespace ScoreTracking.Api.Controllers
 {
     [Route("api/auth")]
     [ApiController]
