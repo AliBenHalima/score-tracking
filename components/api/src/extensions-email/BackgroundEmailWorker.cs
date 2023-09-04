@@ -50,10 +50,8 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
 
                             var fallbackPolicy = Policy.Handle<Exception>()
                                      .FallbackAsync(async (cancellationToken) =>
-                                       await _emailSender.First().Send(email, stoppingToken)
+                                     await _emailSender.Skip(1).First().Send(email, stoppingToken) // Fake EmailSennder Implementation
                                     );
-
-                            //var policy = Policy.WrapAsync(retryPolicy, fallbackPolicy);
 
                             await fallbackPolicy.WrapAsync(retryPolicy).WrapAsync(circuitBreaker).ExecuteAsync(async () =>
                             {
@@ -62,6 +60,7 @@ namespace ScoreTracking.App.BackgroundJobs.Jobs
                                 _logger.LogInformation("Email set successfully");
                                 await _emailQueue.MarkEmailQueueAsSucceededAsync(email.Id);
                             });
+
                         }
                         else
                         {

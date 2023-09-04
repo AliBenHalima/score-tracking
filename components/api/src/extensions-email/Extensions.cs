@@ -29,8 +29,8 @@ namespace ScoreTracking.Extensions.Email
             });
 
 
-            services.AddSingleton<IEmailQueue, DatabaseEmailQueue>();
-            services.AddTransient<IEmailService, QuartzEmailService>();
+            services.AddSingleton<IEmailQueue, RabbitMqEmailQueue>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddSingleton<IEmailSender, MailTrapSender>();
             services.AddSingleton<IEmailSender, FakeEmailSender>();
             services.AddHostedService<BackgroundEmailWorker>();

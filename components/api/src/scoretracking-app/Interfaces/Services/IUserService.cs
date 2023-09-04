@@ -17,7 +17,7 @@ namespace ScoreTracking.App.Interfaces.Services
          Task<User> CreateUser(CreateUserRequest createUserRequest);
          Task<User> UpdateUser(int id, UpdateUserRequest updateUserRequest);
          Task DeleteUser(int id);
-        Task TestQuartz();
+        //Task TestQuartz();
 
     }
 }

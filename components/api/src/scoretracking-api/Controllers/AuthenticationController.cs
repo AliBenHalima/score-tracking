@@ -72,12 +72,12 @@ namespace ScoreTracking.Api.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("job")]
-        public async Task<ActionResult> TestQuartz()
-        {
-            await _userService.TestQuartz();
-            return Ok();
-        }
+        //[HttpGet]
+        //[Route("job")]
+        //public async Task<ActionResult> TestQuartz()
+        //{
+        //    await _userService.TestQuartz();
+        //    return Ok();
+        //}
     }
 }

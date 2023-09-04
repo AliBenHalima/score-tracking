@@ -9,7 +9,6 @@ using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
-using ScoreTracking.App.Jobs;
 using ScoreTracking.App.Models;
 using System.Linq;
 using System.Threading;
@@ -94,26 +93,26 @@ namespace ScoreTracking.App.Services
 
         }
 
-        public async Task TestQuartz()
-        {
-            var schedulerFactory = new StdSchedulerFactory();
-            var scheduler = await schedulerFactory.GetScheduler();
+        //public async Task TestQuartz()
+        //{
+        //    var schedulerFactory = new StdSchedulerFactory();
+        //    var scheduler = await schedulerFactory.GetScheduler();
 
-            IJobDetail job = JobBuilder.Create<TestJob>()
-            .WithIdentity("myJob", "group1")
-            .Build();
+        //    IJobDetail job = JobBuilder.Create<TestJob>()
+        //    .WithIdentity("myJob", "group1")
+        //    .Build();
 
-            // Trigger the job to run now, and then every 40 seconds
-            ITrigger trigger = TriggerBuilder.Create()
-              .WithIdentity("myTrigger", "group1")
-              .StartNow()
-              .WithSimpleSchedule(x => x
-               .WithIntervalInSeconds(40)
-               .RepeatForever())
-              .Build();
+        //    // Trigger the job to run now, and then every 40 seconds
+        //    ITrigger trigger = TriggerBuilder.Create()
+        //      .WithIdentity("myTrigger", "group1")
+        //      .StartNow()
+        //      .WithSimpleSchedule(x => x
+        //       .WithIntervalInSeconds(40)
+        //       .RepeatForever())
+        //      .Build();
 
-            await scheduler.ScheduleJob(job, trigger);
-            await scheduler.Start();
-        }
+        //    await scheduler.ScheduleJob(job, trigger);
+        //    await scheduler.Start();
+        //}
     }
 }

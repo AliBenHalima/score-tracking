@@ -6,7 +6,7 @@ namespace ScoreTracking.Extensions.Email.Services
     public class InMemoryEmailQueue : IEmailQueue
     {
         private readonly ConcurrentQueue<EmailMessage> _emailQueue = new ConcurrentQueue<EmailMessage>();
-            
+
         public Task Enqueue(EmailMessage email, CancellationToken cancellationToken = default)
         {
             _emailQueue.Enqueue(email);
@@ -29,7 +29,7 @@ namespace ScoreTracking.Extensions.Email.Services
 
         public Task MarkEmailQueueAsSucceededAsync(string emailId)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
