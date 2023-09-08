@@ -23,6 +23,7 @@ using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Helpers;
 using Quartz;
 using Microsoft.Extensions.Hosting;
+using ScoreTracking.App.Repositories.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
@@ -37,13 +38,15 @@ builder.Services.AddControllers().AddFluentValidation(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 //Reposirtories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, CacheUserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IRoundRepository, RoundRepository>();
 
 
 
 //Services
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IRoundService, RoundService>();

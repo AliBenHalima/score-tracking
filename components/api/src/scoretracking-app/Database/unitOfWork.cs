@@ -12,15 +12,12 @@ namespace ScoreTracking.App.Database
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DatabaseContext _dbContext;
-        private readonly IUserRepository _userRepository;
-
 
         private bool _disposingValue = false;
 
-        public UnitOfWork(DatabaseContext dbContext, IUserRepository userRepository)
+        public UnitOfWork(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
-            _userRepository = userRepository;
         }
 
         public IDbTransaction BeginTransaction()
