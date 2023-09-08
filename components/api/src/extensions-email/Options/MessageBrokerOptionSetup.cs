@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace ScoreTracking.Extensions.Email.Options
 {
-    public class DatabaseOptionSetup : IConfigureOptions<DatabaseOption>
+    public class MessageBrokerOptionSetup : IConfigureOptions<MessageBrokerOption>
     {
         private readonly IConfiguration _configuration;
 
-        public DatabaseOptionSetup(IConfiguration configuration)
+        public MessageBrokerOptionSetup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public void Configure(DatabaseOption options)
+        public void Configure(MessageBrokerOption options)
         {
-            _configuration.GetSection("DatabaseSetup").Bind(options);
+            _configuration.GetSection("MessageBrokerSetup").Bind(options);
         }
     }
 }
