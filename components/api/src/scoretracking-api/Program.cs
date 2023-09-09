@@ -38,12 +38,16 @@ builder.Services.AddControllers().AddFluentValidation(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddStackExchangeRedisCache(redisOptions =>
+{
+    string connection = builder.Configuration.GetConnectionString("Redis");
+    redisOptions.Configuration = connection;
+});
 builder.Services.AddSingleton<ICacheService, CacheService>();
 
 //Reposirtories
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, DistributedCacheUserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IRoundRepository, RoundRepository>();
 

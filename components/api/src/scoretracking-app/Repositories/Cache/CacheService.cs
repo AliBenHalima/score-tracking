@@ -1,14 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Cache;
-using ScoreTracking.App.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
