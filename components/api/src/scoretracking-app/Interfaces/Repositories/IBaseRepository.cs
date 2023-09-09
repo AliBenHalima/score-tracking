@@ -14,7 +14,7 @@ namespace ScoreTracking.App.Interfaces.Repositories
 {
     public interface IBaseRepository<T> where T : Base
     {
-        IQueryable<T> FindAll(FilterDTO filters, CancellationToken cancellationToken);
+        Task<PagedList<T>?> FindAll(FilterDTO filters, CancellationToken cancellationToken);
         Task<T> FindById(int id);
         Task<IEnumerable<T>> FindByIds(IEnumerable<int> ids);
         Task<T?> FindByCondition(Expression<Func<T, bool>> expression);

@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Quartz;
 using Quartz.Impl;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
+using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +27,7 @@ namespace ScoreTracking.App.Services
         public readonly ILogger<UserService> _logger;
         public readonly IApplicationHelper _helper;
         private readonly IUnitOfWork _unitOfWork;
+
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserRepository userRepository, ILogger<UserService> logger, IApplicationHelper helper)
         {
             _unitOfWork = unitOfWork;
@@ -32,10 +37,12 @@ namespace ScoreTracking.App.Services
             _helper = helper;
         }
 
-        public IQueryable<User> GetUsers(FilterDTO filters, CancellationToken cancellationToken)
+        public async Task<PagedList<User>?> GetUsers(FilterDTO filters, CancellationToken cancellationToken)
         {
-            IQueryable<User> userQuery =  _userRepository.FindAll(filters, cancellationToken);
-            return userQuery;
+            PagedList<User>? users =  await _userRepository.FindAll(filters, cancellationToken);
+            //var users = await PagedList<User>.CreateAsync(usersQuery, _uriService, filters.Page, filters.PageSize, route);
+
+            return users;
         }
 
 

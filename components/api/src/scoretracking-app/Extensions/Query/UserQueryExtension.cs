@@ -1,4 +1,6 @@
-﻿using ScoreTracking.App.Models;
+﻿using ScoreTracking.App.DTOs.Requests;
+using ScoreTracking.App.Helpers;
+using ScoreTracking.App.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,10 @@ namespace ScoreTracking.App.Extensions.Query
                 _ => query.OrderBy(column),
             };
         }
- 
+        public static async Task<PagedList<User>?> ApplyPagination(this IQueryable<User> query, int page, int pageSize)
+        {
+            var pagedData = await PagedList<User>.CreateAsync(query, page, pageSize);
+            return pagedData;
+        }
     }
 }

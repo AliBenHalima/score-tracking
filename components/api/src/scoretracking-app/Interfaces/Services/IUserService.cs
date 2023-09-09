@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.Helpers;
@@ -12,7 +13,7 @@ namespace ScoreTracking.App.Interfaces.Services
 {
     public interface IUserService
     {
-        IQueryable<User> GetUsers(FilterDTO filters, CancellationToken cancellationToken);
+         Task<PagedList<User>?> GetUsers(FilterDTO filters, CancellationToken cancellationToken);
          Task<User> GetUser(int id);
          Task<User> CreateUser(CreateUserRequest createUserRequest);
          Task<User> UpdateUser(int id, UpdateUserRequest updateUserRequest);

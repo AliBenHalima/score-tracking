@@ -1,11 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.Extensions.Query;
+using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Models;
+using ScoreTracking.App.Services;
 using System;
 using System.Linq;
 using System.Threading;
@@ -20,19 +23,20 @@ namespace ScoreTracking.App.Repositories
         {
         }
 
-        public override IQueryable<User> FindAll(FilterDTO filters, CancellationToken cancellationToken)
+        public override async Task<PagedList<User>?> FindAll(FilterDTO filters, CancellationToken cancellationToken)
         {
-            IQueryable<User> userQuery = Entity;
-            userQuery = userQuery.SearchByTerm(filters.SearchTerm)
+            PagedList<User>? users = await Entity.SearchByTerm(filters.SearchTerm)
                         .OrderBy(u => u.FirstName)
-                        .ApplySorting(filters.SortColumn, filters.SortOrder);
-            return userQuery;
+                        .ApplySorting(filters.SortColumn, filters.SortOrder)
+                        .ApplyPagination(filters.Page, filters.PageSize);
+
+            return users;
         }
 
         public override Task<User> Create(User user)
         {
             DatabaseContext.Users.Add(user);
-             return Task.FromResult(user);
+            return Task.FromResult(user);
         }
 
         [Benchmark]

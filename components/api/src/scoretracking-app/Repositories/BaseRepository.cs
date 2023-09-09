@@ -25,11 +25,13 @@ namespace ScoreTracking.App.Repositories
             Entity = databaseContext.Set<T>();
         }
 
-        public virtual IQueryable<T> FindAll(FilterDTO filters, CancellationToken cancellationToken)
+        public virtual async Task<PagedList<T>?> FindAll(FilterDTO filters, CancellationToken cancellationToken)
         {
-            //var query = Entity.AsNoTracking();
+            var query = Entity.AsNoTracking();
             //return await PagedList<T>.CreateAsync(query, UriService, filters.Page, filters.PageSize, string.Empty);
-            return Entity.AsNoTracking();
+            var data = await PagedList<T>.CreateAsync(query, filters.Page, filters.PageSize);
+
+            return data;
 
         }
 
