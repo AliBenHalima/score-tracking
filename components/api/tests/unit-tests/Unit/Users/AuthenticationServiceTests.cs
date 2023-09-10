@@ -23,10 +23,10 @@ namespace ScoreTracking.UnitTests.Unit.Users
         private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private readonly Mock<IJwtProvider> _jwtProviderMock = new Mock<IJwtProvider>();
-
+        private readonly Mock<IUploadFileProvider> _uploadFileProvider = new Mock<IUploadFileProvider>();
         public AuthenticationServiceTests()
         {
-            _sut = new AuthenticationService(_unitOfWorkMock.Object, _mapperMock.Object, _userRepositoryMock.Object, _jwtProviderMock.Object);
+            _sut = new AuthenticationService(_unitOfWorkMock.Object, _mapperMock.Object, _userRepositoryMock.Object, _jwtProviderMock.Object, _uploadFileProvider.Object);
         }
 
         [Fact]

@@ -62,6 +62,7 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IApplicationHelper, GlobalHelper>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUploadFileProvider, LocalUploadFileProvider>();
 
 builder.Services.AddMailing();
 builder.Services.AddLogging();

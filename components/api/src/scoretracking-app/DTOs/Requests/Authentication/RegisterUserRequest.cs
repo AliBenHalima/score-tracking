@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,8 @@ namespace ScoreTracking.App.DTOs.Requests.Authentication
         public string Phone   { get; init; }
         public string Password { get; init; }
         public string ConfirmPassword { get; init; }
+        public IFormFile? Image { get; set; }
+        public string? ImagePath { get; set; }
+
     }
 }

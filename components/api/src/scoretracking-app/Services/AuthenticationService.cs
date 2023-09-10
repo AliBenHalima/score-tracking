@@ -16,21 +16,31 @@ namespace ScoreTracking.App.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IJwtProvider _jwtProvider;
+        private readonly IUploadFileProvider _uploadFileProvider;
 
 
-        public AuthenticationService(IUnitOfWork unitOfWork, IMapper mapper, IUserRepository userRepository, IJwtProvider jwtProvider)
+        public AuthenticationService(IUnitOfWork unitOfWork, IMapper mapper, IUserRepository userRepository, IJwtProvider jwtProvider, IUploadFileProvider uploadFileProvider)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userRepository = userRepository;
             _jwtProvider = jwtProvider;
+            _uploadFileProvider = uploadFileProvider;
         }
 
         public async Task<User> Register(RegisterUserRequest registerUserRequest) {
             User? userByEmail = await _userRepository.FindByEmail(registerUserRequest.Email);
-            if (userByEmail is not null) { throw new RessourceNotFoundException("{0} Already Exist", nameof(RegisterUserRequest.Email));}
+            if (userByEmail is not null) throw new RessourceNotFoundException("{0} Already Exist", nameof(RegisterUserRequest.Email));
+
+            if(registerUserRequest.Image is not null)
+            {
+                string? path = await _uploadFileProvider.UploadFile(registerUserRequest.Image, string.Empty);
+                registerUserRequest.ImagePath = path;
+            }
+
             User user = _mapper.Map<User>(registerUserRequest);
             user.Password = PasswordManager.HashPassword(registerUserRequest.Password);
+
             await _userRepository.Create(user);
             await _unitOfWork.SaveChangesAsync();
             return user;

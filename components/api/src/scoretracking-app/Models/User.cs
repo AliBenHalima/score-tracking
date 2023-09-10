@@ -19,12 +19,13 @@ namespace ScoreTracking.App.Models
         public string Email { get; set; }
         public string Phone { get; set; }
         public string? Password { get; set; }
+        public string? ImagePath { get; set; }
         public DateTimeOffset? PasswordChangedAt { get; set; }
         public DateTimeOffset? VerifiedAt { get; set; }
         [JsonIgnore]
         public List<Game> Games { get; set; } = new();
         [JsonIgnore]
         public List<UserGame> UserGames { get; set; } = new();
-            
+
     }
 }
