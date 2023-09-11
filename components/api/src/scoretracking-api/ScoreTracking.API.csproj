@@ -50,4 +50,8 @@
     <ProjectReference Include="..\scoretracking-app\ScoreTracking.App.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="StaticFiles\" />
+  </ItemGroup>
+
 </Project>

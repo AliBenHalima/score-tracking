@@ -24,6 +24,9 @@ using ScoreTracking.App.Helpers;
 using Quartz;
 using ScoreTracking.App.Repositories.Cache;
 using ScoreTracking.App.Interfaces.Cache;
+using System.Linq;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
@@ -172,6 +175,11 @@ builder.Services.ConfigureOptions<MailSettingsSetup>();
 
 var app = builder.Build();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
+    RequestPath = "/StaticFiles" // Optional: Define a URL prefix for static files
+});
 //app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI(options =>

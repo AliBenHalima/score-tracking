@@ -12,6 +12,7 @@ namespace ScoreTracking.App.DTOs.Users
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string ImagePath { get; set; }
         public DateTimeOffset? VerifiedAt { get; set; }
     }
 }

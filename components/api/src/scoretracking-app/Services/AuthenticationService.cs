@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Flurl;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.Helpers;
@@ -6,6 +7,7 @@ using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Providers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Models;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Services
@@ -34,8 +36,10 @@ namespace ScoreTracking.App.Services
 
             if(registerUserRequest.Image is not null)
             {
-                string? path = await _uploadFileProvider.UploadFile(registerUserRequest.Image, string.Empty);
-                registerUserRequest.ImagePath = path;
+                string filePath = Path.Combine("StaticFiles", "Uploads", "Images");
+                string? fileName = await _uploadFileProvider.UploadFile(registerUserRequest.Image, filePath);
+                string fileUri = Url.Combine("StaticFiles", "Uploads", "Images", fileName);
+                registerUserRequest.ImagePath = fileUri;
             }
 
             User user = _mapper.Map<User>(registerUserRequest);

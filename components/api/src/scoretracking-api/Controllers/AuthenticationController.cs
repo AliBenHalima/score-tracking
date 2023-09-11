@@ -5,7 +5,6 @@ using ScoreTracking.App.DTOs.Emails;
 using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
-using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
@@ -36,11 +35,12 @@ namespace ScoreTracking.Api.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<ActionResult<GenericSuccessResponse<User>>> Register(RegisterUserRequest registerUserRequest)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<GenericSuccessResponse<User>>> Register([FromForm] RegisterUserRequest registerUserRequest)
         {
             User user = await _authenticationService.Register(registerUserRequest);
-            FilterDTO userDTO = _mapper.Map<FilterDTO>(user);
-            return Ok(new GenericSuccessResponse<FilterDTO>("Success", userDTO));
+            RegistredUserDTO userDTO = _mapper.Map<RegistredUserDTO>(user);
+            return Ok(new GenericSuccessResponse<RegistredUserDTO>("Success", userDTO));
         }
 
         [EnableRateLimiting("sliding-signin")]
