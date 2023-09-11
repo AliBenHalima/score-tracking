@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="StaticFiles\" />
+    <Folder Include="StaticFiles\Uploads\Images\" />
   </ItemGroup>
 
 </Project>
