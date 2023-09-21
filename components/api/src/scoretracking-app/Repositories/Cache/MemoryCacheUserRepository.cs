@@ -10,6 +10,7 @@ using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,5 +60,9 @@ namespace ScoreTracking.App.Repositories.Cache
             return await _decorated.FindByPhone(phone);
         }
 
+        public Task<IEnumerable<User>?> GetUsers(CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

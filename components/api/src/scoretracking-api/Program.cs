@@ -24,6 +24,14 @@ using ScoreTracking.App.Helpers;
 using Quartz;
 using ScoreTracking.App.Repositories.Cache;
 using ScoreTracking.App.Interfaces.Cache;
+using BenchmarkDotNet.Toolchains.Results;
+using Nest;
+using Elasticsearch.Net;
+using ScoreTracking.App.DTOs.Users;
+using ScoreTracking.App.Models;
+using ScoreTracking.App.Elasticsearch;
+using ScoreTracking.App.Extensions.BackgroundJobs;
+using ScoreTracking.App.Extensions.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")).UseSnakeCaseNamingConvention());
@@ -77,30 +85,19 @@ builder.Services.AddSingleton<IUriService>(options =>
     return new UriService(uri);
 });
 
-builder.Services.AddQuartz(q =>
-{
-    q.UseMicrosoftDependencyInjectionJobFactory();
-});
+builder.Services.AddElasticsearchSynchronization();
 
-builder.Services.AddQuartzHostedService(opt =>
-{
-opt.WaitForJobsToComplete = true;
-});
-
-//Host.CreateDefaultBuilder()
-//    .ConfigureServices((cxt, services) =>
-//    {
-//        services.AddQuartz(q =>
-//        {
-//            q.UseMicrosoftDependencyInjectionJobFactory();
-//        });
-//        services.AddQuartzHostedService(opt =>
-//        {
-//            opt.WaitForJobsToComplete = true;
-//        });
-//    }).Build();
-
-//BenchmarkRunner.Run<TestClass>();
+// ELasticsearch
+builder.Services.AddSingleton<ISearchClient, UserSearch>();
+//builder.Services.AddSingleton<IElasticClient>(sp =>
+//{
+//    var config = sp.GetRequiredService<IConfiguration>();
+//    var settings = new ConnectionSettings(config.GetValue<string>("Elastic:cloudId"), new BasicAuthenticationCredentials(config.GetValue<string>("Elastic:username"), config.GetValue<string>("Elastic:password")))
+//                       .DefaultIndex("users-index")
+//                       .DefaultMappingFor<RegistredUserDTO>(i => i.IndexName("users-index"));
+//    return new ElasticClient(settings);
+//});
+//builder.Services.AddHostedService<ElasticsearchWorker>();
 
 //Hosted Services
 
@@ -184,6 +181,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
+await app.DatabaseSeederAsync();
 
 app.Run();
 

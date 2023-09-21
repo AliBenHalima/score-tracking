@@ -1,16 +1,21 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Elastic.Clients.Elasticsearch;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Diagnostics.Tracing.Parsers.Kernel;
 using Microsoft.Extensions.Logging;
+using Nest;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
 using ScoreTracking.App.DTOs.Responses;
+using ScoreTracking.App.DTOs.Users;
+using ScoreTracking.App.Elasticsearch;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,6 +75,22 @@ namespace ScoreTracking.Controllers
             // can't remove generic type in case of absence of data. (to review)
             // Probably creating a new class to handle this use case (without generic type)
             return Ok(new SuccessResponse("User Deleted"));
+        }
+
+        [HttpGet]
+        [Route("/test-es")]
+        public async Task<ActionResult> test(ISearchClient searchClient)
+        {
+            await searchClient.Add();
+            var result = await searchClient.Search("Ali");
+            return Ok(result.Documents.ToList());
+        }
+        [HttpGet]
+        [Route("/search-es/{id}")]
+        public async Task<ActionResult> GetUserByDistance([FromRoute] int id)
+        {
+             var result = await _userService.GetUsersByDistance(id, 100);
+            return Ok(result);
         }
 
     }

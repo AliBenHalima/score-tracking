@@ -7,12 +7,6 @@ using ScoreTracking.Extensions.Email.Contratcs;
 using ScoreTracking.Extensions.Email.Infrastructure;
 using ScoreTracking.Extensions.Email.Options;
 using ScoreTracking.Extensions.Email.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Quartz;
 
 namespace ScoreTracking.Extensions.Email
 {

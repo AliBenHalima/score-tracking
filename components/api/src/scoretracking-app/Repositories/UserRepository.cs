@@ -10,6 +10,7 @@ using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Models;
 using ScoreTracking.App.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,12 +24,19 @@ namespace ScoreTracking.App.Repositories
         {
         }
 
-        public override async Task<PagedList<User>?> FindAll(FilterDTO filters, CancellationToken cancellationToken)
+        public override async Task<PagedList<User>?> FindAll(FilterDTO filters, CancellationToken cancellationToken = default)
         {
             PagedList<User>? users = await Entity.SearchByTerm(filters.SearchTerm)
                         .OrderBy(u => u.FirstName)
                         .ApplySorting(filters.SortColumn, filters.SortOrder)
                         .ApplyPagination(filters.Page, filters.PageSize);
+
+            return users;
+        }
+
+        public async Task<IEnumerable<User>?> GetUsers(CancellationToken cancellationToken = default)
+        {
+            IEnumerable<User>? users = await Entity.ToListAsync();
 
             return users;
         }

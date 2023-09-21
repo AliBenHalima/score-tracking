@@ -1,18 +1,22 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Nest;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using Quartz.Impl;
 using ScoreTracking.App.Database;
 using ScoreTracking.App.DTOs.Requests;
 using ScoreTracking.App.DTOs.Requests.Users;
+using ScoreTracking.App.DTOs.Users;
+using ScoreTracking.App.Elasticsearch;
 using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Helpers.Exceptions;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Repositories;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,14 +31,16 @@ namespace ScoreTracking.App.Services
         public readonly ILogger<UserService> _logger;
         public readonly IApplicationHelper _helper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISearchClient _client;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserRepository userRepository, ILogger<UserService> logger, IApplicationHelper helper)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserRepository userRepository, ILogger<UserService> logger, IApplicationHelper helper, ISearchClient client)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userRepository = userRepository;
             _logger = logger;
             _helper = helper;
+            _client = client;
         }
 
         public async Task<PagedList<User>?> GetUsers(FilterDTO filters, CancellationToken cancellationToken)
@@ -97,6 +103,20 @@ namespace ScoreTracking.App.Services
 
              await _userRepository.Delete(user);
              await _unitOfWork.SaveChangesAsync();
+
+        }
+
+        public async Task<IEnumerable<UserByDistanceDto>> GetUsersByDistance(int id, int distance)
+        {
+            User? user = await _userRepository.FindById(id);
+            IReadOnlyCollection<IHit<UserElasticsearchDto>> result;
+            if (user.Latitude is null || user.Longitude is null)
+            {
+                result = new List<IHit<UserElasticsearchDto>>();
+            }
+             result = _client.GetUserByDistance(distance, (double)user.Latitude, (double)user.Longitude);
+            IEnumerable<UserByDistanceDto> userByDistance = _mapper.Map<IEnumerable<UserByDistanceDto>>(result);
+            return userByDistance;
 
         }
 

@@ -58,5 +58,9 @@ namespace ScoreTracking.App.Repositories.Cache
             return await _decorated.FindByPhone(phone);
         }
 
+        public Task<IEnumerable<User>?> GetUsers(CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

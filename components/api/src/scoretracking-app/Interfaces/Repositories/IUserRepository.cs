@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ScoreTracking.App.Interfaces.Repositories
@@ -12,7 +13,7 @@ namespace ScoreTracking.App.Interfaces.Repositories
     {
         Task<User?> FindByEmail(string email);
         Task<User?> FindByPhone(string phone);
-
+        Task<IEnumerable<User>?> GetUsers(CancellationToken cancellationToken = default);
     }
 
 }
