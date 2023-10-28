@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{454560A5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScoreTracking.Api", "src\scoretracking-api\ScoreTracking.Api.csproj", "{69F266E9-EC27-4BA5-B69A-60B0EDF139AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScoreTracking.Api.Backup", "src\scoretracking-api-backup\ScoreTracking.Api.Backup.csproj", "{C28BDBCB-55AE-49A7-AB29-ADB3D0832CBD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScoreTracking.UnitTests", "tests\unit-tests\ScoreTracking.UnitTests.csproj", "{7B7A7DFF-370D-458F-8C35-BF438AEA3440}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScoreTracking.IntegrationTests", "tests\ScoreTracking.IntegrationTests\ScoreTracking.IntegrationTests.csproj", "{B5436C4D-2DE8-46E2-9E66-E7E4006E79A2}"

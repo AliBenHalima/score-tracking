@@ -1,4 +1,4 @@
-namespace ScoreTracking.Extensions.Email.Contratcs;
+namespace ScoreTracking.Extensions.Email.Contracts;
 
 public interface IEmailQueue
 {

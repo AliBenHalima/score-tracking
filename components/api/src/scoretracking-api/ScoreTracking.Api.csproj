@@ -40,6 +40,9 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Yarp.ReverseProxy" Version="2.0.1" />
+       <Content Include="Templates\*">
+        <CopyToPublishDirectory>always</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -50,5 +53,6 @@
     <ProjectReference Include="..\extensions-email\ScoreTracking.Extensions.Email.csproj" />
     <ProjectReference Include="..\scoretracking-app\ScoreTracking.App.csproj" />
   </ItemGroup>
+
 
 </Project>

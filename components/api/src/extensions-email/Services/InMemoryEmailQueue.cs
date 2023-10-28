@@ -1,4 +1,4 @@
-﻿using ScoreTracking.Extensions.Email.Contratcs;
+﻿using ScoreTracking.Extensions.Email.Contracts;
 using System.Collections.Concurrent;
 
 namespace ScoreTracking.Extensions.Email.Services

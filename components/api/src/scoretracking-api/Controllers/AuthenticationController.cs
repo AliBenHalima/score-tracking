@@ -5,11 +5,11 @@ using ScoreTracking.App.DTOs.Emails;
 using ScoreTracking.App.DTOs.Requests.Authentication;
 using ScoreTracking.App.DTOs.Responses;
 using ScoreTracking.App.DTOs.Users;
-using ScoreTracking.App.Helpers;
 using ScoreTracking.App.Interfaces.Helpers;
 using ScoreTracking.App.Interfaces.Services;
 using ScoreTracking.App.Models;
-using ScoreTracking.Extensions.Email.Contratcs;
+using ScoreTracking.Extensions.Email.Contracts.Shared;
+using ScoreTracking.Extensions.Email.Contracts;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -24,14 +24,16 @@ namespace ScoreTracking.Api.Controllers
         private readonly IEmailService _emailService;
         private readonly IApplicationHelper _applicationHelper;
         private readonly IMapper _mapper;
+        private readonly IEventBus _eventBus;
 
-        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService, IApplicationHelper applicationHelper)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService, IMapper mapper, IEmailService emailService, IApplicationHelper applicationHelper, IEventBus eventBus)
         {
             _userService = userService;
             _authenticationService = authenticationService;
             _mapper = mapper;
             _emailService = emailService;
             _applicationHelper = applicationHelper;
+            _eventBus = eventBus;
         }
 
         [HttpPost]
@@ -56,7 +58,7 @@ namespace ScoreTracking.Api.Controllers
         [Route("send-email")]
         public async Task<ActionResult> SendEmail(EmailDataDTO email)
         {
-            string filePath = Directory.GetCurrentDirectory() + "\\Templates\\EmailTemplate.html";
+            string filePath = Directory.GetCurrentDirectory() + "/Templates/EmailTemplate.html";
             string emailTemplateText = System.IO.File.ReadAllText(filePath);
             emailTemplateText = emailTemplateText.Replace("{{UserName}}", email.ReceiverName);
 
@@ -68,16 +70,8 @@ namespace ScoreTracking.Api.Controllers
                 Content = emailTemplateText,
                 Subject = email.EmailSubject
             };
-            await _emailService.SendAsync(emailMessage);
+            await _eventBus.PublishAsync(emailMessage);
             return Ok();
         }
-
-        //[HttpGet]
-        //[Route("job")]
-        //public async Task<ActionResult> TestQuartz()
-        //{
-        //    await _userService.TestQuartz();
-        //    return Ok();
-        //}
     }
 }

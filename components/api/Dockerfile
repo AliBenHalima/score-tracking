@@ -1,11 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS env
 WORKDIR /build
-COPY ./ScoreTracking.Build.sln ./
+COPY ./ScoreTracking.sln ./
 COPY ./src/scoretracking-api/ScoreTracking.Api.csproj ./src/scoretracking-api/
 COPY ./src/scoretracking-app/ScoreTracking.App.csproj ./src/scoretracking-app/
 COPY ./src/extensions-email/ScoreTracking.Extensions.Email.csproj ./src/extensions-email/
 COPY ./tests/unit-tests/ScoreTracking.UnitTests.csproj ./tests/unit-tests/
-RUN dotnet restore ScoreTracking.Build.sln
+COPY ./tests/ScoreTracking.IntegrationTests/ScoreTracking.IntegrationTests.csproj ./tests/ScoreTracking.IntegrationTests/
+RUN dotnet restore ScoreTracking.sln
 
 FROM env AS build-env
 WORKDIR /build

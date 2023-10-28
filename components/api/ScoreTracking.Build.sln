@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D4519E5A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScoreTracking.UnitTests", "tests\unit-tests\ScoreTracking.UnitTests.csproj", "{22781673-2709-4687-BDD3-503A11AB34C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoreTracking.Integ.Tests", "tests\Integ-tests\ScoreTracking.Integ.Tests\ScoreTracking.Integ.Tests.csproj", "{EA9C5CB6-C80D-4388-AD8C-07C024DA979D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

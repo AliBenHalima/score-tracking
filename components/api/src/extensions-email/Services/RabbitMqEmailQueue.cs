@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using ScoreTracking.Extensions.Email.Contracts;
 
 namespace ScoreTracking.Extensions.Email.Services
 {
