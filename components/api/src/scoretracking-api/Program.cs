@@ -48,6 +48,7 @@ builder.Services.AddSingleton<ICacheService, CacheService>();
 //Reposirtories
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserRepository, DistributedCacheUserRepository>();
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IRoundRepository, RoundRepository>();
 

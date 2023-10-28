@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile
       target: runtime
       args:
-        BUILD_CONFIGURATION: Release
+        BUILD_CONFIGURATION: Debug
     restart: on-failure
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
@@ -46,7 +46,7 @@ services:
     networks:
       - scoretracking-net
     logging:
-      driver: "none"
+      driver: "json-file"
     healthcheck:
       test: pg_isready
       interval: 10s
@@ -70,6 +70,17 @@ services:
     logging:
       driver: "none"
 
+  redis_image:
+    image: redis
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    networks:
+      - scoretracking-net
+    volumes:
+      - redis_volume:/var/lib/redis/data
+
 volumes:
   database_volume:
   pgadmin_volume:
+  redis_volume:

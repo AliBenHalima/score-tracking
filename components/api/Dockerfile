@@ -19,4 +19,4 @@ COPY --from=build-env /build/out .
 ENV ASPNETCORE_ENVIRONMENT="Docker"
 ENV ASPNETCORE_URLS="http://+:80"
 EXPOSE 80
-ENTRYPOINT ["dotnet", "ScoreTracking.API.dll"]
+ENTRYPOINT ["dotnet", "ScoreTracking.Api.dll"]
