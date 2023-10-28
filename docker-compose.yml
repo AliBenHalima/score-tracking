@@ -80,7 +80,19 @@ services:
     volumes:
       - redis_volume:/var/lib/redis/data
 
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+
 volumes:
   database_volume:
   pgadmin_volume:
   redis_volume:
+  rabbitmq_data:
